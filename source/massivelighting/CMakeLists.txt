@@ -36,7 +36,7 @@ set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 set(sources
-    ${source_path}/BlitStage.cpp
+    ${source_path}/PostprocessingStage.cpp
     ${source_path}/MassiveLightingPainter.cpp
     ${source_path}/MassiveLightingPipeline.cpp
     ${source_path}/MassiveLightingRenderStage.cpp
@@ -44,7 +44,7 @@ set(sources
 )
 
 set(api_includes
-    ${include_path}/BlitStage.h
+    ${include_path}/PostprocessingStage.h
     ${include_path}/MassiveLightingPainter.h
     ${include_path}/MassiveLightingPipeline.h
     ${include_path}/MassiveLightingRenderStage.h

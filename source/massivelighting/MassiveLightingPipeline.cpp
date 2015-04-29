@@ -1,6 +1,6 @@
 #include "MassiveLightingPipeline.h"
 #include "MassiveLightingRenderStage.h"
-#include "BlitStage.h"
+#include "PostprocessingStage.h"
 
 #include <gloperate/base/make_unique.hpp>
 #include <gloperate/painter/AbstractViewportCapability.h>
@@ -21,20 +21,21 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
 
     auto renderStage = make_unique<MassiveLightingRenderStage>();
-    auto blitStage = make_unique<BlitStage>();
+    auto postprocessingStage = make_unique<PostprocessingStage>();
 
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;
 
-    blitStage->viewport = viewport;
-    blitStage->texture = renderStage->colorTexture;
-    blitStage->targetFBO = targetFBO;
+    postprocessingStage->viewport = viewport;
+    postprocessingStage->colorTexture = renderStage->colorTexture;
+    postprocessingStage->depthTexture = renderStage->depthBufferTexture;
+    postprocessingStage->targetFBO = targetFBO;
 
 
     addStages(
         std::move(renderStage),
-        std::move(blitStage)
+        std::move(postprocessingStage)
     );
 }
 
