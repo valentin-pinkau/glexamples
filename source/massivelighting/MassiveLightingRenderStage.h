@@ -21,8 +21,6 @@ namespace gloperate
     class AbstractTypedRenderTargetCapability;
 }
 
-
-
 class MassiveLightingRenderStage : public gloperate::AbstractStage
 {
 public:

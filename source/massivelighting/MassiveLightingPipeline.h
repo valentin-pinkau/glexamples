@@ -16,13 +16,11 @@ class MetaInformationCapability;
 
 }
 
-
-
 class MassiveLightingPipeline : public gloperate::AbstractPipeline
 {
 public:
     MassiveLightingPipeline();
-    virtual ~MassiveLightingPipeline();
+    virtual ~MassiveLightingPipeline() = default;
 
 public:
     gloperate::Data<gloperate::AbstractViewportCapability *> viewport;

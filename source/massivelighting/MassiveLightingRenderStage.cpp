@@ -27,11 +27,8 @@
 #include <gloperate/primitives/Icosahedron.h>
 #include <gloperate/primitives/VertexDrawable.h>
 
-
-
 using namespace gl;
 using namespace globjects;
-
 
 
 MassiveLightingRenderStage::MassiveLightingRenderStage()
@@ -162,8 +159,6 @@ void MassiveLightingRenderStage::process()
         invalidateOutputs();
     }
 }
-
-
 
 
 void MassiveLightingRenderStage::render()

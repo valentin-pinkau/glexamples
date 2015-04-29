@@ -6,6 +6,7 @@
 
 #include <globjects/Framebuffer.h>
 #include <globjects/Texture.h>
+#include <globjects/Shader.h>
 
 #include <gloperate/painter/AbstractViewportCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
@@ -49,8 +50,8 @@ void PostprocessingStage::process()
         m_fbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
     }
     m_fbo->bind();
-    //gl::glDisable(gl::GL_DEPTH_TEST);
     gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+
     colorTexture.data()->bindActive(gl::GL_TEXTURE0);
     depthTexture.data()->bindActive(gl::GL_TEXTURE1);
 

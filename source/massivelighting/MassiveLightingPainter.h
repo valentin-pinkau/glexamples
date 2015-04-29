@@ -10,10 +10,6 @@
 
 #include <gloperate/pipeline/PipelinePainter.h>
 
-
-
-
-
 namespace globjects
 {
     class Program;

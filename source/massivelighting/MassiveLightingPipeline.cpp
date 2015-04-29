@@ -8,9 +8,6 @@
 #include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 
-
-
-
 using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline()
@@ -39,6 +36,3 @@ MassiveLightingPipeline::MassiveLightingPipeline()
     );
 }
 
-MassiveLightingPipeline::~MassiveLightingPipeline()
-{
-}
