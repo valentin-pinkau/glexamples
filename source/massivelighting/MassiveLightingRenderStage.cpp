@@ -12,8 +12,6 @@
 #include <globjects/Framebuffer.h>
 #include <globjects/globjects.h>
 
-#include <reflectionzeug/Property.h>
-
 #include <gloperate/primitives/UniformGroup.h>
 
 #include <gloperate/painter/AbstractViewportCapability.h>
@@ -24,7 +22,6 @@
 
 #include <gloperate/primitives/ScreenAlignedQuad.h>
 #include <gloperate/primitives/AdaptiveGrid.h>
-#include <gloperate/primitives/Icosahedron.h>
 #include <gloperate/primitives/VertexDrawable.h>
 
 using namespace gl;
@@ -34,6 +31,7 @@ using namespace globjects;
 MassiveLightingRenderStage::MassiveLightingRenderStage()
 :   AbstractStage("MassiveLightingRenderStage")
 {
+    addInput("drawables", drawables);
     addInput("viewport", viewport);
     addInput("camera", camera);
     addInput("projection", projection);
@@ -51,9 +49,8 @@ void MassiveLightingRenderStage::initialize()
     loadShader();
     setupFbo();
     setupUniforms();
-    m_icosahedron = new gloperate::Icosahedron{3};
 
-    static const auto zNear = 0.3f, zFar = 15.f;
+    static const auto zNear = 0.3f, zFar = 30.f;
 
     projection.data()->setZNear(zNear);
     projection.data()->setZFar(zFar);
@@ -62,15 +59,12 @@ void MassiveLightingRenderStage::initialize()
     m_grid->setColor({0.6f, 0.6f, 0.6f});
     m_grid->setNearFar(zNear, zFar);
 
-
     DebugMessage::enable();
-
 }
 void MassiveLightingRenderStage::setupGLState()
 {
     globjects::init();
     glClearColor(0.85f, 0.87f, 0.91f, 1.0f);
-
 }
 
 void MassiveLightingRenderStage::loadShader()
@@ -136,6 +130,11 @@ void MassiveLightingRenderStage::process()
 {
     auto rerender = false;
 
+    if(drawables.hasChanged())
+    {
+        rerender = true;
+    }
+
     if (viewport.hasChanged())
     {
         resizeFbos(viewport.data()->width(), viewport.data()->height());
@@ -180,7 +179,10 @@ void MassiveLightingRenderStage::render()
 
     m_program->use();
 
-    m_icosahedron->draw();
+    for(auto & drawable : (*drawables))
+    {
+        drawable->draw();
+    }
 
     m_program->release();
 

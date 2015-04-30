@@ -3,6 +3,8 @@
 #include <gloperate/pipeline/AbstractPipeline.h>
 #include <gloperate/pipeline/Data.h>
 
+#include <reflectionzeug/FilePath.h>
+
 namespace gloperate
 {
 
@@ -27,5 +29,7 @@ public:
     gloperate::Data<gloperate::AbstractPerspectiveProjectionCapability *> projection;
     gloperate::Data<gloperate::AbstractCameraCapability *> camera;
     gloperate::Data<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
+
+    gloperate::Data<reflectionzeug::FilePath> sceneFilePath;
 
 };

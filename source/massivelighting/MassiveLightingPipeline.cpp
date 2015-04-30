@@ -1,3 +1,4 @@
+#include "GeometryStage.h"
 #include "MassiveLightingPipeline.h"
 #include "MassiveLightingRenderStage.h"
 #include "PostprocessingStage.h"
@@ -12,14 +13,18 @@ using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline()
 : AbstractPipeline("MassiveLightingPipeline")
+, sceneFilePath("data/transparency/transparency_scene.obj")
 
 {
     //addParameter("strategies", &strategies);
 
-
+    auto geometryStage = make_unique<GeometryStage>();
     auto renderStage = make_unique<MassiveLightingRenderStage>();
     auto postprocessingStage = make_unique<PostprocessingStage>();
 
+    geometryStage->sceneFilePath = sceneFilePath;
+
+    renderStage->drawables = geometryStage->drawables;
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;
@@ -31,6 +36,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
 
     addStages(
+        std::move(geometryStage),
         std::move(renderStage),
         std::move(postprocessingStage)
     );

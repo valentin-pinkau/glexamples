@@ -5,12 +5,18 @@ message(STATUS "Example ${target}")
 
 # External libraries
 
-# ...
+find_package(ASSIMP QUIET)
+
+if (NOT ASSIMP_FOUND)
+        message("Example ${target} skipped: ASSIMP not found")
+        return()
+endif()
 
 # Includes
 
 include_directories(
     BEFORE
+    ${ASSIMP_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -19,6 +25,7 @@ include_directories(
 
 set(libs
     ${GLEXAMPLES_DEPENDENCY_LIBRARIES}
+    ${ASSIMP_LIBRARIES}
 )
 
 
@@ -36,18 +43,28 @@ set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 set(sources
-    ${source_path}/PostprocessingStage.cpp
+    ${source_path}/assimp/AssimpLoader.cpp
+    ${source_path}/assimp/AssimpProcessing.cpp
+    ${source_path}/assimp/PolygonalDrawable.cpp
+    ${source_path}/assimp/PolygonalGeometry.cpp
+    ${source_path}/GeometryStage.cpp    
     ${source_path}/MassiveLightingPainter.cpp
     ${source_path}/MassiveLightingPipeline.cpp
     ${source_path}/MassiveLightingRenderStage.cpp
     ${source_path}/plugin.cpp
+    ${source_path}/PostprocessingStage.cpp
 )
 
 set(api_includes
-    ${include_path}/PostprocessingStage.h
+    ${include_path}/assimp/AssimpLoader.h
+    ${include_path}/assimp/AssimpProcessing.h
+    ${include_path}/assimp/PolygonalDrawable.h
+    ${include_path}/assimp/PolygonalGeometry.h
+    ${include_path}/GeometryStage.h
     ${include_path}/MassiveLightingPainter.h
     ${include_path}/MassiveLightingPipeline.h
     ${include_path}/MassiveLightingRenderStage.h
+    ${include_path}/PostprocessingStage.h
 )
 
 # Group source files

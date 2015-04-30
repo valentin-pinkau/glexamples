@@ -26,6 +26,10 @@ MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & reso
     m_projectionCapability->changed.connect([this]() { m_pipeline.projection.invalidate(); });
     m_cameraCapability->changed.connect([this]() { m_pipeline.camera.invalidate(); });
     m_targetFramebufferCapability->changed.connect([this]() { m_pipeline.targetFBO.invalidate(); });
+
+    reflectionzeug::PropertyGroup * sceneGroup = addGroup("Scene");
+
+    sceneGroup->addProperty(createProperty("SceneFilePath", m_pipeline.sceneFilePath));
 }
 
 

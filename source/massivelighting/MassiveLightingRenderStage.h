@@ -1,5 +1,13 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
+#include "assimp/PolygonalDrawable.h"
+#include "assimp/PolygonalGeometry.h"
+
+#include <glm/vec3.hpp>
+
 #include <globjects/base/ref_ptr.h>
 #include <globjects/Framebuffer.h>
 #include <globjects/Program.h>
@@ -8,7 +16,6 @@
 #include <gloperate/pipeline/Data.h>
 #include <gloperate/pipeline/InputSlot.h>
 #include <gloperate/primitives/UniformGroup.h>
-
 
 namespace gloperate
 {
@@ -29,7 +36,7 @@ public:
     virtual void initialize() override;
 
 public:
-
+    gloperate::InputSlot<std::vector<std::unique_ptr<PolygonalDrawable>>> drawables;
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
     gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
@@ -52,7 +59,6 @@ protected:
 
 protected:
     globjects::ref_ptr<gloperate::AdaptiveGrid> m_grid;
-    globjects::ref_ptr<gloperate::Icosahedron> m_icosahedron;
     globjects::ref_ptr<globjects::Program> m_program;
     gloperate::UniformGroup m_uniforms;
     globjects::ref_ptr<globjects::Framebuffer> m_fbo;

@@ -40,7 +40,6 @@ void PostprocessingStage::initialize()
     m_uniforms.addToProgram(m_program);
 
     m_screenAlignedQuad = new gloperate::ScreenAlignedQuad(m_program);
-
 }
 
 void PostprocessingStage::process()
@@ -60,6 +59,5 @@ void PostprocessingStage::process()
     depthTexture.data()->unbindActive(gl::GL_TEXTURE1);
     colorTexture.data()->unbindActive(gl::GL_TEXTURE0);
     m_fbo->unbind();
-
 }
 
