@@ -122,8 +122,23 @@ void MassiveLightingRenderStage::setupFbo()
 void MassiveLightingRenderStage::setupUniforms()
 {
     m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transform", glm::mat4()));
-    m_uniforms.addToProgram(m_program);
+	m_uniforms.addToProgram(m_program);
 
+	Lights lights = {
+		{
+			{ glm::vec4(0, 5, 5, 0), glm::vec4(1, 0, 0, 1) },
+			{ glm::vec4(0, 5, -5, 0), glm::vec4(0, 0, 1, 1) }
+		}, 2
+	};
+
+	m_lights = make_ref<Buffer>();
+	m_lights->bind(GL_UNIFORM_BUFFER);
+	m_lights->setData(sizeof(lights), &lights, GL_DYNAMIC_DRAW);
+	m_lights->unbind(GL_UNIFORM_BUFFER);
+
+	auto uniformBlock = m_program->uniformBlock("Lights");
+	m_lights->bindBase(GL_UNIFORM_BUFFER, 0);
+	uniformBlock->setBinding(0);
 }
 
 void MassiveLightingRenderStage::process()

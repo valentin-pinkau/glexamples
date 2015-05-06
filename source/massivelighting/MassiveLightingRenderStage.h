@@ -17,6 +17,8 @@
 #include <gloperate/pipeline/InputSlot.h>
 #include <gloperate/primitives/UniformGroup.h>
 
+#define MAX_LIGHTS 16
+
 namespace gloperate
 {
     class AdaptiveGrid;
@@ -27,6 +29,18 @@ namespace gloperate
     class AbstractCameraCapability;
     class AbstractTypedRenderTargetCapability;
 }
+
+struct Light
+{
+	glm::vec4 position;
+	glm::vec4 color;
+};
+
+struct Lights
+{
+	Light lights[MAX_LIGHTS];
+	glm::uint number_of_lights;
+};
 
 class MassiveLightingRenderStage : public gloperate::AbstractStage
 {
@@ -62,6 +76,7 @@ protected:
     globjects::ref_ptr<globjects::Program> m_program;
     gloperate::UniformGroup m_uniforms;
     globjects::ref_ptr<globjects::Framebuffer> m_fbo;
+	globjects::ref_ptr<globjects::Buffer> m_lights;
 };
 
 
