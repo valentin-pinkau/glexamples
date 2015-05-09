@@ -38,6 +38,7 @@ struct Light
 
 struct Lights
 {
+	glm::vec4 ambient_color;
 	Light lights[MAX_LIGHTS];
 	glm::uint number_of_lights;
 };

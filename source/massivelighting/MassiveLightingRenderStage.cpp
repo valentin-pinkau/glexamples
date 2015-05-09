@@ -64,7 +64,7 @@ void MassiveLightingRenderStage::initialize()
 void MassiveLightingRenderStage::setupGLState()
 {
     globjects::init();
-    glClearColor(0.85f, 0.87f, 0.91f, 1.0f);
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
 }
 
 void MassiveLightingRenderStage::loadShader()
@@ -122,13 +122,16 @@ void MassiveLightingRenderStage::setupFbo()
 void MassiveLightingRenderStage::setupUniforms()
 {
     m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transform", glm::mat4()));
+	m_uniforms.addUniform(new globjects::Uniform<glm::vec3>("eye", glm::vec3()));
 	m_uniforms.addToProgram(m_program);
 
 	Lights lights = {
+		glm::vec4(1, 1, 1, 1), // ambient_color
 		{
-			{ glm::vec4(0, 5, 5, 0), glm::vec4(1, 0, 0, 1) },
-			{ glm::vec4(0, 5, -5, 0), glm::vec4(0, 0, 1, 1) }
-		}, 2
+			// position:               color:
+			{ glm::vec4(0, 5, -5, 0), glm::vec4(1, 1, 0, 1) },
+			{ glm::vec4(0, 5, 5, 0),  glm::vec4(0, 0, 1, 1) }
+		}, 2 // number_of_lights
 	};
 
 	m_lights = make_ref<Buffer>();
@@ -161,6 +164,7 @@ void MassiveLightingRenderStage::process()
         const auto transform = projection.data()->projection() * camera.data()->view();
         const auto eye = camera.data()->eye();
         m_uniforms.uniform<glm::mat4>("transform")->set(transform);
+		m_uniforms.uniform<glm::vec3>("eye")->set(eye);
 
         m_grid->update(eye, transform);
         rerender = true;
