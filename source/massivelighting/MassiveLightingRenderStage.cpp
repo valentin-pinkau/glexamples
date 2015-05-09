@@ -23,6 +23,7 @@
 #include <gloperate/primitives/ScreenAlignedQuad.h>
 #include <gloperate/primitives/AdaptiveGrid.h>
 #include <gloperate/primitives/VertexDrawable.h>
+#include <gloperate/primitives/PolygonalDrawable.h>
 
 using namespace gl;
 using namespace globjects;

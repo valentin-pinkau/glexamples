@@ -15,13 +15,14 @@ class AbstractViewportCapability;
 class AbstractVirtualTimeCapability;
 class AbstractTypedRenderTargetCapability;
 class MetaInformationCapability;
+class ResourceManager;
 
 }
 
 class MassiveLightingPipeline : public gloperate::AbstractPipeline
 {
 public:
-    MassiveLightingPipeline();
+	MassiveLightingPipeline(gloperate::ResourceManager & resourceManager);
     virtual ~MassiveLightingPipeline() = default;
 
 public:
@@ -31,5 +32,4 @@ public:
     gloperate::Data<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
 
     gloperate::Data<reflectionzeug::FilePath> sceneFilePath;
-
 };

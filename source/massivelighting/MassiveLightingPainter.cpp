@@ -12,10 +12,11 @@ using gloperate::make_unique;
 
 MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & resourceManager)
     : PipelinePainter(resourceManager, m_pipeline)
-    , m_targetFramebufferCapability{addCapability(make_unique<gloperate::TargetFramebufferCapability>())}
-    , m_viewportCapability{addCapability(make_unique<gloperate::ViewportCapability>())}
-    , m_projectionCapability{addCapability(make_unique<gloperate::PerspectiveProjectionCapability>(m_viewportCapability))}
-    , m_cameraCapability{addCapability(make_unique<gloperate::CameraCapability>())}
+    , m_targetFramebufferCapability{addCapability(new gloperate::TargetFramebufferCapability())}
+    , m_viewportCapability{addCapability(new gloperate::ViewportCapability())}
+    , m_projectionCapability{addCapability(new gloperate::PerspectiveProjectionCapability(m_viewportCapability))}
+    , m_cameraCapability{addCapability(new gloperate::CameraCapability())}
+	, m_pipeline(resourceManager)
 {
     m_pipeline.viewport.setData(m_viewportCapability);
     m_pipeline.projection.setData(m_projectionCapability);

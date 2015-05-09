@@ -11,16 +11,16 @@
 
 using gloperate::make_unique;
 
-MassiveLightingPipeline::MassiveLightingPipeline()
+MassiveLightingPipeline::MassiveLightingPipeline(gloperate::ResourceManager & resourceManager)
 : AbstractPipeline("MassiveLightingPipeline")
 , sceneFilePath("data/transparency/transparency_scene.obj")
 
 {
     //addParameter("strategies", &strategies);
 
-    auto geometryStage = make_unique<GeometryStage>();
-    auto renderStage = make_unique<MassiveLightingRenderStage>();
-    auto postprocessingStage = make_unique<PostprocessingStage>();
+    auto geometryStage = new GeometryStage(resourceManager);
+    auto renderStage = new MassiveLightingRenderStage();
+    auto postprocessingStage = new PostprocessingStage();
 
     geometryStage->sceneFilePath = sceneFilePath;
 
@@ -36,9 +36,9 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
 
     addStages(
-        std::move(geometryStage),
-        std::move(renderStage),
-        std::move(postprocessingStage)
+        geometryStage,
+        renderStage,
+        postprocessingStage
     );
 }
 

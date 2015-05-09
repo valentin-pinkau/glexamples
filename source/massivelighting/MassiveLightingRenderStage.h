@@ -28,6 +28,7 @@ namespace gloperate
     class AbstractProjectionCapability;
     class AbstractCameraCapability;
     class AbstractTypedRenderTargetCapability;
+	class PolygonalDrawable;
 }
 
 struct Light
@@ -51,7 +52,7 @@ public:
     virtual void initialize() override;
 
 public:
-    gloperate::InputSlot<std::vector<std::unique_ptr<PolygonalDrawable>>> drawables;
+    gloperate::InputSlot<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
     gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
