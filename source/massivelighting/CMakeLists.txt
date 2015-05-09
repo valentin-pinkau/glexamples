@@ -5,6 +5,16 @@ message(STATUS "Example ${target}")
 
 # External libraries
 
+find_package(Qt5OpenGL  5.1 REQUIRED)
+find_package(Qt5Core    5.1 REQUIRED)
+find_package(Qt5Gui     5.1 REQUIRED)
+find_package(Qt5Widgets 5.1 REQUIRED)
+
+if (NOT Qt5Core_FOUND)
+    message("Example ${target} skipped: Qt5 not found")
+    return()
+endif()
+
 # Includes
 
 include_directories(
@@ -18,6 +28,10 @@ include_directories(
 
 set(libs
     ${GLEXAMPLES_DEPENDENCY_LIBRARIES}
+    Qt5::Core
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::OpenGL
 )
 
 
@@ -35,6 +49,7 @@ set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 set(sources
+	${source_path}/qt/qgl.cpp    
     ${source_path}/GeometryStage.cpp    
     ${source_path}/MassiveLightingPainter.cpp
     ${source_path}/MassiveLightingPipeline.cpp
@@ -44,6 +59,7 @@ set(sources
 )
 
 set(api_includes
+    ${include_path}/qt/qgl.h
     ${include_path}/GeometryStage.h
     ${include_path}/MassiveLightingPainter.h
     ${include_path}/MassiveLightingPipeline.h

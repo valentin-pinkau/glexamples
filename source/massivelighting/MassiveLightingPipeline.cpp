@@ -25,6 +25,7 @@ MassiveLightingPipeline::MassiveLightingPipeline(gloperate::ResourceManager & re
     geometryStage->sceneFilePath = sceneFilePath;
 
     renderStage->drawables = geometryStage->drawables;
+	renderStage->materials = geometryStage->materials;
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;

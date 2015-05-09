@@ -15,6 +15,7 @@ layout (std140) uniform Lights
 };
 
 uniform vec3 eye;
+uniform sampler2D material;
 
 const float ambient_factor = 0.2;
 const float diffuse_factor = 0.3;
@@ -22,13 +23,13 @@ const float specular_factor = 0.6;
 
 in vec3 v_normal;
 in vec3 v_vertex;
+in vec3 v_texCoords;
 
 out vec4 fragColor;
 
 vec3 base_color()
 {
-	// TODO: Access texture here, or use per-vertex color attribute
-	return vec3(0.8, 0.8, 0.8);
+	return texture2D(material, v_texCoords.xy).rgb;
 }
 
 void main()

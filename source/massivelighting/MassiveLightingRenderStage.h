@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 #include <glm/vec3.hpp>
 
@@ -15,6 +16,11 @@
 #include <gloperate/primitives/UniformGroup.h>
 
 #define MAX_LIGHTS 16
+
+namespace globjects
+{
+	class Texture;
+}
 
 namespace gloperate
 {
@@ -49,7 +55,8 @@ public:
     virtual void initialize() override;
 
 public:
-    gloperate::InputSlot<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
+	gloperate::InputSlot<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
+	gloperate::InputSlot<std::vector<globjects::Texture *>> materials;
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
     gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 
 #include <glm/vec3.hpp>
 
@@ -13,6 +14,11 @@
 #include <gloperate/primitives/PolygonalDrawable.h>
 
 #include <reflectionzeug/FilePath.h>
+
+namespace globjects
+{
+	class Texture;
+}
 
 namespace gloperate
 {
@@ -30,6 +36,7 @@ public:
 public:
     gloperate::InputSlot<reflectionzeug::FilePath> sceneFilePath;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
+	gloperate::Data<std::vector<globjects::Texture *>> materials;
 
 protected:
     virtual void process() override;

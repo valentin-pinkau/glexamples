@@ -33,6 +33,7 @@ MassiveLightingRenderStage::MassiveLightingRenderStage()
 :   AbstractStage("MassiveLightingRenderStage")
 {
     addInput("drawables", drawables);
+	addInput("materials", materials);
     addInput("viewport", viewport);
     addInput("camera", camera);
     addInput("projection", projection);
@@ -124,6 +125,7 @@ void MassiveLightingRenderStage::setupUniforms()
 {
     m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transform", glm::mat4()));
 	m_uniforms.addUniform(new globjects::Uniform<glm::vec3>("eye", glm::vec3()));
+	m_uniforms.addUniform(new globjects::Uniform<GLint>("material", 0));
 	m_uniforms.addToProgram(m_program);
 
 	Lights lights = {
@@ -199,9 +201,18 @@ void MassiveLightingRenderStage::render()
 
     m_program->use();
 
-    for(auto & drawable : (*drawables))
+	for (auto i = 0; i < drawables->size(); ++i)
     {
-        drawable->draw();
+		auto & drawable = drawables->at(i);
+		auto & material = materials->at(i);
+
+		if (material)
+			material->bindActive(GL_TEXTURE0);
+        
+		drawable->draw();
+
+		if (material)
+			material->unbindActive(GL_TEXTURE0);
     }
 
     m_program->release();
