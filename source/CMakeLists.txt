@@ -36,7 +36,7 @@ set(IDE_FOLDER "")
 add_subdirectory(emptyexample)
 add_subdirectory(massivelighting)
 add_subdirectory(transparency)
-add_subdirectory(viewer)
+add_subdirectory(glexamples-viewer)
 
 # Tests
 set(IDE_FOLDER "Tests")
