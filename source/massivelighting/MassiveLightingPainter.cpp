@@ -15,7 +15,7 @@ MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & reso
     , m_targetFramebufferCapability{addCapability(new gloperate::TargetFramebufferCapability())}
     , m_viewportCapability{addCapability(new gloperate::ViewportCapability())}
     , m_projectionCapability{addCapability(new gloperate::PerspectiveProjectionCapability(m_viewportCapability))}
-    , m_cameraCapability{addCapability(new gloperate::CameraCapability())}
+    , m_cameraCapability{addCapability(new gloperate::CameraCapability(glm::vec3(-1.5, 2, 0), glm::vec3(5, 3, 0)))}
 	, m_pipeline(resourceManager)
 {
     m_pipeline.viewport.setData(m_viewportCapability);
