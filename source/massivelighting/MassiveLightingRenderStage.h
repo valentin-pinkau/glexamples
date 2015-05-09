@@ -3,9 +3,6 @@
 #include <memory>
 #include <vector>
 
-#include "assimp/PolygonalDrawable.h"
-#include "assimp/PolygonalGeometry.h"
-
 #include <glm/vec3.hpp>
 
 #include <globjects/base/ref_ptr.h>

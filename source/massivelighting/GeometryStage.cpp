@@ -1,8 +1,5 @@
 #include "GeometryStage.h"
 
-#include "assimp/AssimpLoader.h"
-#include "assimp/AssimpProcessing.h"
-
 #include <assimp/cimport.h>
 
 #include <globjects/DebugMessage.h>
