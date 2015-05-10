@@ -56,7 +56,7 @@ public:
 
 public:
 	gloperate::InputSlot<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
-	gloperate::InputSlot<std::vector<globjects::Texture *>> materials;
+	gloperate::InputSlot<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
     gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;

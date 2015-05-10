@@ -65,7 +65,7 @@ void GeometryStage::reloadScene()
     }
 
 	// upload all textures
-	std::map<unsigned int, globjects::Texture *> materialsMap;
+	std::map<unsigned int, globjects::ref_ptr<globjects::Texture>> materialsMap;
 	auto sceneFile = QString::fromStdString(sceneFilePath.data().string());
 	auto sceneDirectory = QFileInfo(sceneFile).dir();
 	for (const auto & material : scene->materials())
@@ -73,8 +73,8 @@ void GeometryStage::reloadScene()
 		auto materialFile = QString::fromStdString(material.second);
 		QImage originalImage(sceneDirectory.filePath(materialFile));
 		auto glImage = QGLWidget::convertToGLFormat(originalImage);
-		
-		auto texture = globjects::Texture::createDefault(GL_TEXTURE_2D);
+
+		globjects::ref_ptr<globjects::Texture> texture = globjects::Texture::createDefault(GL_TEXTURE_2D);
 		texture->bind();
 		texture->image2D(0, GL_RGBA, glImage.width(), glImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, glImage.bits());
 		texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -86,8 +86,9 @@ void GeometryStage::reloadScene()
 		materialsMap[material.first] = texture;
 	}
 
-    *drawables = std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>();
-	*materials = std::vector<globjects::Texture *>();
+	drawables->clear();
+	materials->clear();
+
 	for (const auto & geometry : scene->meshes())
 	{
 		drawables->push_back(make_unique<gloperate::PolygonalDrawable>(*geometry));

@@ -36,7 +36,7 @@ public:
 public:
     gloperate::InputSlot<reflectionzeug::FilePath> sceneFilePath;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
-	gloperate::Data<std::vector<globjects::Texture *>> materials;
+	gloperate::Data<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
 
 protected:
     virtual void process() override;
