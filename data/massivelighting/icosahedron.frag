@@ -29,7 +29,7 @@ out vec4 fragColor;
 
 vec3 base_color()
 {
-	return texture2D(material, v_texCoords.xy).rgb;
+	return texture(material, v_texCoords.xy).rgb;
 }
 
 void main()
