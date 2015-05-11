@@ -43,7 +43,7 @@ void main()
 	vec3 diffuse = vec3(0);
 	vec3 specular = vec3(0);
 
-	for (int i = 0; i < number_of_lights; ++i)
+	for (uint i = 0u; i < number_of_lights; ++i)
 	{
 		vec3 light_direction = lights[i].position.xyz - v_vertex;
 		float lambertian = max(dot(normalize(light_direction), normal), 0.0);
