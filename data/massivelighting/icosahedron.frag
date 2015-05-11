@@ -16,10 +16,6 @@ layout (std140) uniform Lights
 
 uniform vec3 eye;
 uniform sampler2D material;
-const vec4 base_color = vec4(0.5, 1, 0, 1);
-const float ambient_factor = 0.4;
-const float diffuse_factor = 0.4;
-const float specular_factor = 0.4;
 
 const float ambient_factor = 0.2;
 const float diffuse_factor = 0.3;
@@ -43,6 +39,9 @@ void main()
 	vec3 normal = normalize(v_normal);
 	vec3 view_direction = normalize(eye - v_vertex);
 
+	vec3 ambient = ambient_color.rgb;
+	vec3 diffuse = vec3(0);
+	vec3 specular = vec3(0);
 
 	for (uint i = 0u; i < number_of_lights; ++i)
 	{
@@ -50,6 +49,7 @@ void main()
 		float lambertian = max(dot(normalize(light_direction), normal), 0.0);
 
 		diffuse += lights[i].color.xyz * lambertian;
+
 		vec3 half_direction = normalize(light_direction + view_direction);
 		float specular_angle = max(dot(half_direction, normal), 0.0);
 		float specular_intensity = pow(specular_angle, 16.0);
@@ -64,13 +64,14 @@ void main()
 	vec3 lighted_color = base_color() * min(combined_lighting, 1);
 	fragColor = vec4(lighted_color, 1.0);
 }
-  
+
+
 vec4 GetPointColor(Light light, vec3 pos, vec3 viewDir, vec3 normal)
 {
   vec3 n,halfV;
   vec3 lightDir;
   float NdotL,NdotHV;
-  vec4 color = base_color; //globalAmbient
+  vec4 color = vec4(base_color(), 1); //globalAmbient
   float att,spotEffect;
   //per light parameters
   float spotCosCutoff = 0.5;
@@ -84,9 +85,9 @@ vec4 GetPointColor(Light light, vec3 pos, vec3 viewDir, vec3 normal)
   //per Material parameters
   float materialSpecular = 0.6;
   float materialShininess = 0.6;
-  
-  
-   
+
+
+
   /* a fragment shader can't write a verying variable, hence we need
   a new variable to store the normalized interpolated normal */
   n = normalize(normal);
@@ -95,7 +96,7 @@ vec4 GetPointColor(Light light, vec3 pos, vec3 viewDir, vec3 normal)
   lightDir = vec3(light.position.xyz-pos);
 
   /* compute the distance to the light source to a varying variable*/
-  dist = length(lightDir);
+  float dist = length(lightDir);
   lightDir = normalize(lightDir);
 
   /* compute the dot product between normal and ldir */
@@ -107,9 +108,9 @@ vec4 GetPointColor(Light light, vec3 pos, vec3 viewDir, vec3 normal)
           att = spotEffect / (constantAttenuation +
                   linearAttenuation * dist +
                   quadraticAttenuation * dist * dist);
-               
-          color += att * (diffuse_color * NdotL + ambient);
-          
+
+          color += att * (diffuse_color * NdotL + color);
+
           halfV = normalize((viewDir + lightDir) / 2);
           NdotHV = max(dot(n,halfV),0.0);
           color += att * materialSpecular * specular_factor * pow(NdotHV,materialShininess);
