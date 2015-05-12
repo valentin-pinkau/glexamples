@@ -13,7 +13,7 @@ using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline(gloperate::ResourceManager & resourceManager)
 : AbstractPipeline("MassiveLightingPipeline")
-, sceneFilePath("data/massivelighting/dabrovic-sponza/sponza.obj")
+, sceneFilePath("data/massivelighting/dabrovic-sponza/sponza.fbx")
 
 {
     //addParameter("strategies", &strategies);
