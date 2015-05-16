@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QImage>
+#include <QDebug>
 
 #include <glbinding/gl/gl.h>
 
@@ -17,7 +18,7 @@
 #include <gloperate/primitives/PolygonalDrawable.h> 
 #include <gloperate/primitives/PolygonalGeometry.h>
 
-#include "qt/qgl.h"
+#include "Utilities.h"
 
 using namespace gl;
 using gloperate::make_unique;
@@ -72,7 +73,14 @@ void GeometryStage::reloadScene()
 	{
 		auto materialFile = QString::fromStdString(material.second);
 		QImage originalImage(sceneDirectory.filePath(materialFile));
-		auto glImage = QGLWidget::convertToGLFormat(originalImage);
+		if (originalImage.isNull())
+		{
+			qDebug() << "Could not load texture file" << sceneDirectory.filePath(materialFile);
+			continue;
+		}
+			
+
+		auto glImage = Utilities::convertToGLFormat(originalImage);
 
 		globjects::ref_ptr<globjects::Texture> texture = globjects::Texture::createDefault(GL_TEXTURE_2D);
 		texture->bind();

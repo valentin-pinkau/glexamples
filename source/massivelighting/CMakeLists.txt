@@ -49,22 +49,22 @@ set(include_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 set(sources
-	${source_path}/qt/qgl.cpp    
     ${source_path}/GeometryStage.cpp    
     ${source_path}/MassiveLightingPainter.cpp
     ${source_path}/MassiveLightingPipeline.cpp
     ${source_path}/MassiveLightingRenderStage.cpp
     ${source_path}/plugin.cpp
     ${source_path}/PostprocessingStage.cpp
+	${source_path}/Utilities.cpp
 )
 
 set(api_includes
-    ${include_path}/qt/qgl.h
     ${include_path}/GeometryStage.h
     ${include_path}/MassiveLightingPainter.h
     ${include_path}/MassiveLightingPipeline.h
     ${include_path}/MassiveLightingRenderStage.h
     ${include_path}/PostprocessingStage.h
+	${include_path}/Utilities.h
 )
 
 # Group source files
