@@ -19,9 +19,8 @@ layout (std140) uniform Lights
 uniform vec3 eye;
 uniform sampler2D material;
 
-const float material_ambient_color = 0.2;
-const float material_diffuse_color = 0.3;
-const float material_specular_color = 0.6;
+const float material_ambient_factor = 0.2;
+const float material_diffuse_factor = 0.3;
 const float material_specular_factor = 0.6;
 const float material_shininess_factor = 16;
 
@@ -38,7 +37,7 @@ vec3 base_color()
 
 void main()
 {
-	float light_factor = material_ambient_color;
+	float light_factor = material_ambient_factor;
 
 	vec3 normal = normalize(v_normal);
 	vec3 view_direction = normalize(eye - v_vertex);
@@ -69,9 +68,9 @@ void main()
         float spotExponent = lights[i].attenuation.w;
         vec3  spotDirection = lights[i].multiuse.xyz;
         
-        float spotEffect = abs(dot(normalize(spotDirection), normalize(-light_direction)));
+        float spotEffect = dot(normalize(spotDirection), normalize(-light_direction));
         //if fragment is outside spot cone
-        if (spotEffect < spotCosCutoff) { continue; }
+        if (spotEffect > 0 || abs(spotEffect) < spotCosCutoff) { continue; }
         spotEffect = pow(spotEffect, spotExponent);        
       }
       //uni
@@ -88,15 +87,15 @@ void main()
       vec3 half_direction = normalize((light_direction + view_direction) /2);
       float specular_angle = max(dot(half_direction, normal), 0.0);
       float specular_intensity = pow(specular_angle, material_shininess_factor);
-      specular += att * material_specular_factor * specular_intensity;
+      specular += att * specular_intensity;
     }
 	}
 
-	vec3 combined_lighting = material_ambient_color * ambient
+	vec3 combined_lighting = material_ambient_factor * ambient
                          + 
-                         material_diffuse_color * diffuse
+                         material_diffuse_factor * diffuse
                          +
-												 material_specular_color * specular
+												 material_specular_factor * specular
                          ;
 
 	vec3 lighted_color = base_color() * min(combined_lighting, 1);
