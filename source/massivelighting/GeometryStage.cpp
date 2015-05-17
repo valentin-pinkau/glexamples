@@ -17,9 +17,8 @@
 using namespace gl;
 using gloperate::make_unique;
 
-GeometryStage::GeometryStage(gloperate::ResourceManager & resourceManager)
+GeometryStage::GeometryStage()
 :   AbstractStage("GeometryStage")
-,	m_resourceManager(resourceManager)
 {
     addInput("sceneFilePath", sceneFilePath);
 
@@ -52,7 +51,7 @@ void GeometryStage::process()
 void GeometryStage::reloadScene()
 {
 	const auto &sceneFile = sceneFilePath.data().string();
-    const auto scene = m_resourceManager.load<gloperate::Scene>(sceneFile);
+    const auto scene = resourceManager.data()->load<gloperate::Scene>(sceneFile);
 
     if (!scene)
     {
@@ -71,7 +70,7 @@ void GeometryStage::reloadScene()
 	for (const auto & material : scene->materials())
 	{
 		auto texturePath = sceneDirectory + material.second;
-		auto texture = m_resourceManager.load<globjects::Texture>(texturePath);
+		auto texture = resourceManager.data()->load<globjects::Texture>(texturePath);
 
 		if (texture == nullptr)
 		{

@@ -16,12 +16,12 @@ MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & reso
     , m_viewportCapability{addCapability(new gloperate::ViewportCapability())}
     , m_projectionCapability{addCapability(new gloperate::PerspectiveProjectionCapability(m_viewportCapability))}
     , m_cameraCapability{addCapability(new gloperate::CameraCapability(glm::vec3(-1.5, 2, 0), glm::vec3(5, 3, 0)))}
-	, m_pipeline(resourceManager)
 {
     m_pipeline.viewport.setData(m_viewportCapability);
     m_pipeline.projection.setData(m_projectionCapability);
     m_pipeline.camera.setData(m_cameraCapability);
     m_pipeline.targetFBO.setData(m_targetFramebufferCapability);
+	m_pipeline.resourceManager.setData(&resourceManager);
 
     m_viewportCapability->changed.connect([this]() { m_pipeline.viewport.invalidate(); });
     m_projectionCapability->changed.connect([this]() { m_pipeline.projection.invalidate(); });
