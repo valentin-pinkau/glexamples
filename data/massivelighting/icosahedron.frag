@@ -48,14 +48,14 @@ void main()
 
 	for (uint i = 0u; i < number_of_lights; i++)
 	{
-    float constantAttenuation = lights[i].attenuation.x;
-    float linearAttenuation = lights[i].attenuation.y;
-    float quadraticAttenuation = lights[i].attenuation.z;
+    float light_constant_attenuation = lights[i].attenuation.x;
+    float light_linear_attenuation = lights[i].attenuation.y;
+    float light_quadratic_attenuation = lights[i].attenuation.z;
     
     vec3 light_direction = lights[i].position.xyz - v_vertex;
     float light_distance = length(light_direction);
 		float NdotL = max(dot(normalize(light_direction), normal), 0.0); 
-    float spotEffect = 1.0;
+    float light_attenuation_factor = 1.0;
     //only shade front face
     if (NdotL > 0.0) {
       //area
@@ -64,23 +64,23 @@ void main()
       }
       //spot light
       else if (lights[i].position.w > 1.0) {
-        float spotCosCutoff = lights[i].multiuse.w;
-        float spotExponent = lights[i].attenuation.w;
-        vec3  spotDirection = lights[i].multiuse.xyz;
+        float spot_cos_cutoff = lights[i].multiuse.w;
+        float spot_exponent = lights[i].attenuation.w;
+        vec3  spot_direction = lights[i].multiuse.xyz;
         
-        float spotEffect = dot(normalize(spotDirection), normalize(-light_direction));
+        float light_attenuation_factor = dot(normalize(spot_direction), normalize(-light_direction));
         //if fragment is outside spot cone
-        if (spotEffect > 0 || abs(spotEffect) < spotCosCutoff) { continue; }
-        spotEffect = pow(spotEffect, spotExponent);        
+        if (light_attenuation_factor > 0 || abs(light_attenuation_factor) < spot_cos_cutoff) { continue; }
+        light_attenuation_factor = pow(light_attenuation_factor, spot_exponent);        
       }
       //uni
       else {
         
       }
                   
-      float att = spotEffect / (constantAttenuation +
-                  linearAttenuation * light_distance +
-                  quadraticAttenuation * light_distance * light_distance);
+      float att = light_attenuation_factor / (light_constant_attenuation +
+                  light_linear_attenuation * light_distance +
+                  light_quadratic_attenuation * light_distance * light_distance);
                   
       diffuse += att * lights[i].color.xyz * NdotL;
       
