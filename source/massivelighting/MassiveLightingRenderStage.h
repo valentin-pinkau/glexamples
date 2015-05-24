@@ -34,10 +34,21 @@ namespace gloperate
 	class PolygonalDrawable;
 }
 
+/*mappings for light types
+	fields		|		uni (type==0)					|		spot (type==2)								|		area  (type==4)		|
+
+position		vec4(position.xyz,0)					vec4(position.xyz,2)								vec4(center.xyz,4)
+color			vec4(color.rgb,1)						vec4(color.rgb,1)									vec4(color.rgb,1)
+attenuation		vec4(constAtt,linearAtt,quadricAtt,0)	vec4(constAtt,linearAtt,quadricAtt,spotExponent)	vec4(constAtt,linearAtt,quadricAtt,width)
+multiuse		not used								vec4(spotDirection.xyz,spotCosCutOf)				vec4(planeNormal.xyz,height)
+
+*/
 struct Light
 {
 	glm::vec4 position;
 	glm::vec4 color;
+	glm::vec4 attenuation;
+	glm::vec4 multiuse;
 };
 
 struct Lights
