@@ -22,7 +22,7 @@ class ResourceManager;
 class MassiveLightingPipeline : public gloperate::AbstractPipeline
 {
 public:
-	MassiveLightingPipeline(gloperate::ResourceManager & resourceManager);
+	MassiveLightingPipeline();
     virtual ~MassiveLightingPipeline() = default;
 
 public:
@@ -30,6 +30,7 @@ public:
     gloperate::Data<gloperate::AbstractPerspectiveProjectionCapability *> projection;
     gloperate::Data<gloperate::AbstractCameraCapability *> camera;
     gloperate::Data<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
+	gloperate::Data<gloperate::ResourceManager *> resourceManager;
 
     gloperate::Data<reflectionzeug::FilePath> sceneFilePath;
 };

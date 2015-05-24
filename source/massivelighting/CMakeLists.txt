@@ -5,15 +5,6 @@ message(STATUS "Example ${target}")
 
 # External libraries
 
-find_package(Qt5OpenGL  5.1 REQUIRED)
-find_package(Qt5Core    5.1 REQUIRED)
-find_package(Qt5Gui     5.1 REQUIRED)
-find_package(Qt5Widgets 5.1 REQUIRED)
-
-if (NOT Qt5Core_FOUND)
-    message("Example ${target} skipped: Qt5 not found")
-    return()
-endif()
 
 # Includes
 
@@ -28,10 +19,6 @@ include_directories(
 
 set(libs
     ${GLEXAMPLES_DEPENDENCY_LIBRARIES}
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::OpenGL
 )
 
 
@@ -55,7 +42,6 @@ set(sources
     ${source_path}/MassiveLightingRenderStage.cpp
     ${source_path}/plugin.cpp
     ${source_path}/PostprocessingStage.cpp
-	${source_path}/Utilities.cpp
 )
 
 set(api_includes
@@ -64,7 +50,6 @@ set(api_includes
     ${include_path}/MassiveLightingPipeline.h
     ${include_path}/MassiveLightingRenderStage.h
     ${include_path}/PostprocessingStage.h
-	${include_path}/Utilities.h
 )
 
 # Group source files

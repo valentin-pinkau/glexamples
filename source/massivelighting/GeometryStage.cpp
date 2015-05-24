@@ -1,11 +1,5 @@
 #include "GeometryStage.h"
 
-#include <QString>
-#include <QFileInfo>
-#include <QDir>
-#include <QImage>
-#include <QDebug>
-
 #include <glbinding/gl/gl.h>
 
 #include <globjects/Texture.h>
@@ -18,14 +12,13 @@
 #include <gloperate/primitives/PolygonalDrawable.h> 
 #include <gloperate/primitives/PolygonalGeometry.h>
 
-#include "Utilities.h"
+#include <iostream>
 
 using namespace gl;
 using gloperate::make_unique;
 
-GeometryStage::GeometryStage(gloperate::ResourceManager & resourceManager)
+GeometryStage::GeometryStage()
 :   AbstractStage("GeometryStage")
-,	m_resourceManager(resourceManager)
 {
     addInput("sceneFilePath", sceneFilePath);
 
@@ -57,7 +50,8 @@ void GeometryStage::process()
 
 void GeometryStage::reloadScene()
 {
-    const auto scene = m_resourceManager.load<gloperate::Scene>(sceneFilePath.data().string());
+	const auto &sceneFile = sceneFilePath.data().string();
+    const auto scene = resourceManager.data()->load<gloperate::Scene>(sceneFile);
 
     if (!scene)
     {
@@ -65,26 +59,26 @@ void GeometryStage::reloadScene()
         return;
     }
 
+	// try to extract directory from scene file path
+	std::string sceneDirectory;
+	const auto lastSlashIndex = sceneFile.rfind('/');
+	if (lastSlashIndex != std::string::npos)
+		sceneDirectory = sceneFile.substr(0, lastSlashIndex + 1);
+
 	// upload all textures
 	std::map<unsigned int, globjects::ref_ptr<globjects::Texture>> materialsMap;
-	auto sceneFile = QString::fromStdString(sceneFilePath.data().string());
-	auto sceneDirectory = QFileInfo(sceneFile).dir();
 	for (const auto & material : scene->materials())
 	{
-		auto materialFile = QString::fromStdString(material.second);
-		QImage originalImage(sceneDirectory.filePath(materialFile));
-		if (originalImage.isNull())
+		auto texturePath = sceneDirectory + material.second;
+		auto texture = resourceManager.data()->load<globjects::Texture>(texturePath);
+
+		if (texture == nullptr)
 		{
-			qDebug() << "Could not load texture file" << sceneDirectory.filePath(materialFile);
+			std::cout << "Could not load texture file " << texturePath << std::endl;
 			continue;
 		}
-			
 
-		auto glImage = Utilities::convertToGLFormat(originalImage);
-
-		globjects::ref_ptr<globjects::Texture> texture = globjects::Texture::createDefault(GL_TEXTURE_2D);
 		texture->bind();
-		texture->image2D(0, GL_RGBA, glImage.width(), glImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, glImage.bits());
 		texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		texture->setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		texture->setParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);

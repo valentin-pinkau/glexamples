@@ -29,19 +29,19 @@ namespace gloperate
 class GeometryStage : public gloperate::AbstractStage
 {
 public:
-	GeometryStage(gloperate::ResourceManager & resourceManager);
+	GeometryStage();
     virtual ~GeometryStage() = default;
     virtual void initialize() override;
 
 public:
     gloperate::InputSlot<reflectionzeug::FilePath> sceneFilePath;
+	gloperate::InputSlot<gloperate::ResourceManager *> resourceManager;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
 	gloperate::Data<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
 
 protected:
     virtual void process() override;
 	void reloadScene();
-	gloperate::ResourceManager & m_resourceManager;
 
 };
 

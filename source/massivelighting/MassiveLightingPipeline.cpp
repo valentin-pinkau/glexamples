@@ -8,21 +8,23 @@
 #include <gloperate/painter/AbstractPerspectiveProjectionCapability.h>
 #include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
+#include <gloperate/resources/ResourceManager.h>
 
 using gloperate::make_unique;
 
-MassiveLightingPipeline::MassiveLightingPipeline(gloperate::ResourceManager & resourceManager)
+MassiveLightingPipeline::MassiveLightingPipeline()
 : AbstractPipeline("MassiveLightingPipeline")
-, sceneFilePath("data/massivelighting/dabrovic-sponza/sponza.obj")
+, sceneFilePath("data/massivelighting/dabrovic-sponza/sponza.fbx")
 
 {
     //addParameter("strategies", &strategies);
 
-    auto geometryStage = new GeometryStage(resourceManager);
+    auto geometryStage = new GeometryStage();
     auto renderStage = new MassiveLightingRenderStage();
     auto postprocessingStage = new PostprocessingStage();
 
     geometryStage->sceneFilePath = sceneFilePath;
+	geometryStage->resourceManager = resourceManager;
 
     renderStage->drawables = geometryStage->drawables;
 	renderStage->materials = geometryStage->materials;
