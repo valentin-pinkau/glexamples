@@ -31,6 +31,7 @@ namespace gloperate
     class AbstractProjectionCapability;
     class AbstractCameraCapability;
     class AbstractTypedRenderTargetCapability;
+    class Light;
 	class PolygonalDrawable;
 }
 
@@ -43,18 +44,18 @@ attenuation		vec4(constAtt,linearAtt,quadricAtt,0)	vec4(constAtt,linearAtt,quadr
 multiuse		not used								vec4(spotDirection.xyz,spotCosCutOf)				vec4(planeNormal.xyz,height)
 
 */
-struct Light
+struct GPULight
 {
-	glm::vec4 position;
-	glm::vec4 color;
-	glm::vec4 attenuation;
-	glm::vec4 multiuse;
+    glm::vec4 position;
+    glm::vec4 color;
+    glm::vec4 attenuation;
+    glm::vec4 multiuse;
 };
 
-struct Lights
+struct GPULights
 {
 	glm::vec4 ambient_color;
-	Light lights[MAX_LIGHTS];
+    GPULight lights[MAX_LIGHTS];
 	glm::uint number_of_lights;
 };
 
@@ -68,6 +69,7 @@ public:
 public:
 	gloperate::InputSlot<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
 	gloperate::InputSlot<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
+    gloperate::InputSlot<std::vector<std::unique_ptr<gloperate::Light>>> lights;
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
     gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;

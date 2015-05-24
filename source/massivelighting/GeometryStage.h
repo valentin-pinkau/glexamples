@@ -23,6 +23,7 @@ namespace globjects
 namespace gloperate
 {
 	class ResourceManager;
+    class Light;
 }
 
 
@@ -38,6 +39,7 @@ public:
 	gloperate::InputSlot<gloperate::ResourceManager *> resourceManager;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
 	gloperate::Data<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
+    gloperate::Data<std::vector<std::unique_ptr<gloperate::Light>>> lights;
 
 protected:
     virtual void process() override;

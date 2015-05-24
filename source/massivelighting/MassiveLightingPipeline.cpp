@@ -28,6 +28,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
     renderStage->drawables = geometryStage->drawables;
 	renderStage->materials = geometryStage->materials;
+    renderStage->lights = geometryStage->lights;
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;

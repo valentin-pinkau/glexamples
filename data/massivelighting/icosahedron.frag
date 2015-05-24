@@ -20,7 +20,7 @@ uniform vec3 eye;
 uniform sampler2D material;
 
 const float material_ambient_factor = 0.2;
-const float material_diffuse_factor = 0.3;
+const float material_diffuse_factor = 0.5;
 const float material_specular_factor = 0.6;
 const float material_shininess_factor = 16;
 
