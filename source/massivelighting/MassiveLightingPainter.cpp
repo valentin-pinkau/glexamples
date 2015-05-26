@@ -7,6 +7,7 @@
 #include <gloperate/painter/CameraCapability.h>
 #include <gloperate/painter/VirtualTimeCapability.h>
 #include <gloperate/pipeline/AbstractPipeline.h>
+#include <gloperate/painter/AbstractPerspectiveProjectionCapability.h>
 
 using gloperate::make_unique;
 
@@ -17,6 +18,8 @@ MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & reso
     , m_projectionCapability{addCapability(new gloperate::PerspectiveProjectionCapability(m_viewportCapability))}
     , m_cameraCapability{addCapability(new gloperate::CameraCapability(glm::vec3(-1.5, 2, 0), glm::vec3(5, 3, 0)))}
 {
+	m_projectionCapability->setZFar(1000);
+
     m_pipeline.viewport.setData(m_viewportCapability);
     m_pipeline.projection.setData(m_projectionCapability);
     m_pipeline.camera.setData(m_cameraCapability);

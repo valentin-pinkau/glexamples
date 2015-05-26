@@ -92,13 +92,13 @@ void GeometryStage::reloadScene()
 
 	drawables->clear();
 	materials->clear();
+	lights->clear();
 
 	for (const auto & geometry : scene->meshes())
 	{
 		drawables->push_back(make_unique<gloperate::PolygonalDrawable>(*geometry));
 		materials->push_back(materialsMap[geometry->materialIndex()]);
 	}
-
     for (const auto light : scene->lights())
     {
         lights->push_back(make_unique<gloperate::Light>(*light));

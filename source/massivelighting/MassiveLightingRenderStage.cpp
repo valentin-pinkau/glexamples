@@ -25,6 +25,7 @@
 #include <gloperate/primitives/VertexDrawable.h>
 #include <gloperate/primitives/PolygonalDrawable.h>
 #include <gloperate/primitives/Light.h>
+#include <iostream>
 
 using namespace gl;
 using namespace globjects;
@@ -158,16 +159,16 @@ void MassiveLightingRenderStage::process()
     if(lights.hasChanged())
     {
         GPULights gpuLights;
-        gpuLights.ambient_color = glm::vec4(1, 1, 1, 1);
-        gpuLights.number_of_lights = lights.data().size();
+        gpuLights.ambient_color = glm::vec4(0.25, 0.25, 0.25, 0);
+        gpuLights.number_of_lights = std::min(size_t(MAX_LIGHTS), lights.data().size());
 
         for (auto i = 0; i < lights.data().size() && i < MAX_LIGHTS; i++)
         {
             GPULight gpuLight;
             auto & inLight = lights.data()[i];
-            gpuLight.position = glm::vec4(inLight->position(), 0.f);//inLight->type());
-            gpuLight.color = glm::vec4(inLight->colorDiffuse(), 1.f);
-            gpuLight.attenuation = glm::vec4(inLight->attenuationConst(), inLight->attenuationLinear(), inLight->attenuationQuad(), 0.f);
+            gpuLight.position = glm::vec4(inLight->m_position, 0.f);//inLight->type());
+			gpuLight.color = glm::vec4(1, 1, 0, 1);//glm::vec4(inLight->m_colorDiffuse, 1.f);
+			gpuLight.attenuation = glm::vec4(0, 0, 0.5, 0);// glm::vec4(inLight->m_attenuationConstant, inLight->m_attenuationLinear, inLight->m_attenuationQuadratic, 0.f);
             gpuLights.lights[i] = gpuLight;
         }
 

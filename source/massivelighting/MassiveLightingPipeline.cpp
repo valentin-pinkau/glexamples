@@ -9,12 +9,13 @@
 #include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 #include <gloperate/resources/ResourceManager.h>
+#include <gloperate/primitives/Light.h>
 
 using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline()
 : AbstractPipeline("MassiveLightingPipeline")
-, sceneFilePath("data/massivelighting/dabrovic-sponza/sponza.fbx")
+, sceneFilePath("data/massivelighting/lost-empire/lost-empire.fbx")
 
 {
     //addParameter("strategies", &strategies);

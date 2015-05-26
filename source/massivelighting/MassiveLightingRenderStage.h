@@ -15,7 +15,7 @@
 #include <gloperate/pipeline/InputSlot.h>
 #include <gloperate/primitives/UniformGroup.h>
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 256
 
 namespace globjects
 {
