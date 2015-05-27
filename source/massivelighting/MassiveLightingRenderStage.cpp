@@ -27,6 +27,9 @@
 #include <gloperate/primitives/Light.h>
 #include <iostream>
 
+#include <random>
+#include <chrono>
+
 using namespace gl;
 using namespace globjects;
 
@@ -162,12 +165,15 @@ void MassiveLightingRenderStage::process()
         gpuLights.ambient_color = glm::vec4(0.25, 0.25, 0.25, 0);
         gpuLights.number_of_lights = std::min(size_t(MAX_LIGHTS), lights.data().size());
 
+		std::srand(std::time(0)); // use current time as seed for random generator
+
         for (auto i = 0; i < lights.data().size() && i < MAX_LIGHTS; i++)
         {
             GPULight gpuLight;
             auto & inLight = lights.data()[i];
             gpuLight.position = glm::vec4(inLight->m_position, 0.f);//inLight->type());
-			gpuLight.color = glm::vec4(1, 1, 0, 1);//glm::vec4(inLight->m_colorDiffuse, 1.f);
+			gpuLight.color = glm::vec4(static_cast <float> (rand()) / static_cast <float> (RAND_MAX)
+				, static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), 1);//glm::vec4(inLight->m_colorDiffuse, 1.f);
 			gpuLight.attenuation = glm::vec4(0, 0, 0.5, 0);// glm::vec4(inLight->m_attenuationConstant, inLight->m_attenuationLinear, inLight->m_attenuationQuadratic, 0.f);
             gpuLights.lights[i] = gpuLight;
         }
