@@ -171,9 +171,6 @@ void MassiveLightingRenderStage::process()
             gpuLights.lights[i] = gpuLight;
         }
 
-//        { glm::vec4(0, 5, 5, 0), glm::vec4(1, 1, 0, 1), glm::vec4(1, 0, 0, 0), glm::vec4(0, 0, 0, 0) },
-//        { glm::vec4(0, 5, -5, 2), glm::vec4(0, 0, 1, 1), glm::vec4(1, 0, 0, 20), glm::vec4(1, 0, 0, 0.9) }
-
         m_lights->bind(GL_UNIFORM_BUFFER);
         m_lights->setData(sizeof(gpuLights), &gpuLights, GL_DYNAMIC_DRAW);
         m_lights->unbind(GL_UNIFORM_BUFFER);

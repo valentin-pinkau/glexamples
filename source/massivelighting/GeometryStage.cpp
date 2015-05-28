@@ -92,6 +92,7 @@ void GeometryStage::reloadScene()
 
 	drawables->clear();
 	materials->clear();
+    lights->clear();
 
 	for (const auto & geometry : scene->meshes())
 	{
