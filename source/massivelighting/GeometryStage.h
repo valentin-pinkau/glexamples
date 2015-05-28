@@ -12,6 +12,7 @@
 #include <gloperate/pipeline/Data.h>
 #include <gloperate/pipeline/InputSlot.h>
 #include <gloperate/primitives/PolygonalDrawable.h>
+#include <gloperate/primitives/Light.h>
 
 #include <reflectionzeug/FilePath.h>
 
@@ -23,7 +24,6 @@ namespace globjects
 namespace gloperate
 {
 	class ResourceManager;
-    class Light;
 }
 
 
