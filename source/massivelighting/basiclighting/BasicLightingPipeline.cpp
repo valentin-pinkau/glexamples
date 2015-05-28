@@ -1,7 +1,7 @@
 #include "GeometryStage.h"
-#include "MassiveLightingPipeline.h"
-#include "MassiveLightingRenderStage.h"
-#include "PostprocessingStage.h"
+#include "BasicLightingPipeline.h"
+#include "BasicLightingRenderStage.h"
+#include "BasicLightingPostprocessingStage.h"
 
 #include <gloperate/base/make_unique.hpp>
 #include <gloperate/painter/AbstractViewportCapability.h>
@@ -12,16 +12,16 @@
 
 using gloperate::make_unique;
 
-MassiveLightingPipeline::MassiveLightingPipeline()
-: AbstractPipeline("MassiveLightingPipeline")
+BasicLightingPipeline::BasicLightingPipeline()
+: AbstractPipeline("BasicLightingPipeline")
 , sceneFilePath("data/massivelighting/testScene/testScene.fbx")
 
 {
     //addParameter("strategies", &strategies);
 
     auto geometryStage = new GeometryStage();
-    auto renderStage = new MassiveLightingRenderStage();
-    auto postprocessingStage = new PostprocessingStage();
+    auto renderStage = new BasicLightingRenderStage();
+    auto postprocessingStage = new BasicLightingPostprocessingStage();
 
     geometryStage->sceneFilePath = sceneFilePath;
 	geometryStage->resourceManager = resourceManager;

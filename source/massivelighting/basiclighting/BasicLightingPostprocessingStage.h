@@ -27,10 +27,10 @@ class ScreenAlignedQuad;
 
 }
 
-class PostprocessingStage : public gloperate::AbstractStage
+class BasicLightingPostprocessingStage : public gloperate::AbstractStage
 {
 public:
-    PostprocessingStage();
+	BasicLightingPostprocessingStage();
 
     virtual void initialize() override;
 public:

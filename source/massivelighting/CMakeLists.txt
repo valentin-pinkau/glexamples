@@ -37,19 +37,27 @@ set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/")
 
 set(sources
     ${source_path}/GeometryStage.cpp    
-    ${source_path}/MassiveLightingPainter.cpp
-    ${source_path}/MassiveLightingPipeline.cpp
-    ${source_path}/MassiveLightingRenderStage.cpp
+    ${source_path}/basiclighting/BasicLightingPainter.cpp
+    ${source_path}/basiclighting/BasicLightingPipeline.cpp
+    ${source_path}/basiclighting/BasicLightingRenderStage.cpp
+    ${source_path}/basiclighting/BasicLightingPostprocessingStage.cpp
+	${source_path}/massivelighting/MassiveLightingPainter.cpp
+    ${source_path}/massivelighting/MassiveLightingPipeline.cpp
+    ${source_path}/massivelighting/MassiveLightingRenderStage.cpp
+    ${source_path}/massivelighting/MassiveLightingPostprocessingStage.cpp
     ${source_path}/plugin.cpp
-    ${source_path}/PostprocessingStage.cpp
 )
 
 set(api_includes
     ${include_path}/GeometryStage.h
-    ${include_path}/MassiveLightingPainter.h
-    ${include_path}/MassiveLightingPipeline.h
-    ${include_path}/MassiveLightingRenderStage.h
-    ${include_path}/PostprocessingStage.h
+    ${include_path}/basiclighting/BasicLightingPainter.h
+    ${include_path}/basiclighting/BasicLightingPipeline.h
+    ${include_path}/basiclighting/BasicLightingRenderStage.h
+    ${include_path}/basiclighting/BasicLightingPostprocessingStage.h
+	${include_path}/massivelighting/MassiveLightingPainter.h
+    ${include_path}/massivelighting/MassiveLightingPipeline.h
+    ${include_path}/massivelighting/MassiveLightingRenderStage.h
+    ${include_path}/massivelighting/MassiveLightingPostprocessingStage.h
 )
 
 # Group source files

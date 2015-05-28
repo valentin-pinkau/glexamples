@@ -1,4 +1,4 @@
-#include "PostprocessingStage.h"
+#include "MassiveLightingPostprocessingStage.h"
 
 #include <glbinding/gl/bitfield.h>
 #include <glbinding/gl/enum.h>
@@ -14,7 +14,7 @@
 
 
 
-PostprocessingStage::PostprocessingStage()
+MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
 : AbstractStage("Postprocessing")
 
 {
@@ -26,13 +26,13 @@ PostprocessingStage::PostprocessingStage()
     addOptionalInput("targetFBO", targetFBO);
 }
 
-void PostprocessingStage::initialize()
+void MassiveLightingPostprocessingStage::initialize()
 {
     m_program = new globjects::Program{};
 
     m_program->attach(
-        globjects::Shader::fromFile(gl::GL_VERTEX_SHADER, "data/massivelighting/postprocessing.vert"),
-        globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/postprocessing.frag")
+        globjects::Shader::fromFile(gl::GL_VERTEX_SHADER, "data/massivelighting/massivelighting/postprocessing.vert"),
+        globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
     );
 
     m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
@@ -42,7 +42,7 @@ void PostprocessingStage::initialize()
     m_screenAlignedQuad = new gloperate::ScreenAlignedQuad(m_program);
 }
 
-void PostprocessingStage::process()
+void MassiveLightingPostprocessingStage::process()
 {
     if(!m_fbo)
     {
