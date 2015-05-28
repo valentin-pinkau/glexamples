@@ -28,7 +28,7 @@ BasicLightingPipeline::BasicLightingPipeline()
 
     renderStage->drawables = geometryStage->drawables;
 	renderStage->materials = geometryStage->materials;
-    renderStage->lights = geometryStage->lights;
+    renderStage->lightsBuffer = geometryStage->lightsBuffer;
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;

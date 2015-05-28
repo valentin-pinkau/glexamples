@@ -5,6 +5,7 @@
 #include <globjects/Texture.h>
 #include <globjects/DebugMessage.h>
 #include <globjects/logging.h>
+#include <globjects/globjects.h>
 
 #include <gloperate/base/make_unique.hpp>
 #include <gloperate/resources/ResourceManager.h>
@@ -25,12 +26,13 @@ GeometryStage::GeometryStage()
 
     addOutput("drawables", drawables);
 	addOutput("materials", materials);
-    addOutput("lights", lights);
+    addOutput("lights Buffer", lightsBuffer);
 }
 
 void GeometryStage::initialize()
 {
     globjects::DebugMessage::enable();
+
 }
 void GeometryStage::process()
 {
@@ -92,7 +94,7 @@ void GeometryStage::reloadScene()
 
 	drawables->clear();
 	materials->clear();
-    lights->clear();
+    lightsBuffer = globjects::make_ref<globjects::Buffer>();
 
 	for (const auto & geometry : scene->meshes())
 	{
@@ -100,10 +102,26 @@ void GeometryStage::reloadScene()
 		materials->push_back(materialsMap[geometry->materialIndex()]);
 	}
 
-    for (const auto light : scene->lights())
+
+    GPULights gpuLights;
+    gpuLights.ambient_color = glm::vec4(1, 1, 1, 1);
+    gpuLights.number_of_lights = scene->lights().size();
+
+    for (auto i = 0; i < scene->lights().size() && i < MAX_LIGHTS; i++)
     {
-        lights->push_back(make_unique<gloperate::Light>(*light));
+        GPULight gpuLight;
+        auto & inLight = scene->lights()[i];
+        gpuLight.position = glm::vec4(inLight->position(), inLight->type());
+        gpuLight.color = glm::vec4(inLight->colorDiffuse(), 1.f);
+        gpuLight.attenuation = glm::vec4(inLight->attenuationConst(), inLight->attenuationLinear(), inLight->attenuationQuad(), 0.9f); //spotlight exponent is not imported
+        gpuLights.lights[i] = gpuLight;
     }
+
+    lightsBuffer.data()->bind(GL_UNIFORM_BUFFER);
+    lightsBuffer.data()->setData(sizeof(gpuLights), &gpuLights, GL_DYNAMIC_DRAW);
+    lightsBuffer.data()->unbind(GL_UNIFORM_BUFFER);
+
+
 
 	delete scene;
 }

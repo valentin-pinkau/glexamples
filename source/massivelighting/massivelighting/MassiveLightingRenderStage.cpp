@@ -35,7 +35,6 @@ MassiveLightingRenderStage::MassiveLightingRenderStage()
 {
     addInput("drawables", drawables);
 	addInput("materials", materials);
-    addInput("lights", lights);
     addInput("viewport", viewport);
     addInput("camera", camera);
     addInput("projection", projection);
@@ -129,22 +128,6 @@ void MassiveLightingRenderStage::setupUniforms()
 	m_uniforms.addUniform(new globjects::Uniform<glm::vec3>("eye", glm::vec3()));
 	m_uniforms.addUniform(new globjects::Uniform<GLint>("material", 0));
 	m_uniforms.addToProgram(m_program);
-
-    GPULights gpuLights = {
-		glm::vec4(1, 1, 1, 1), // ambient_color
-		{
-            {}
-        }, 0 // number_of_lights
-	};
-
-	m_lights = make_ref<Buffer>();
-	m_lights->bind(GL_UNIFORM_BUFFER);
-    m_lights->setData(sizeof(gpuLights), &gpuLights, GL_DYNAMIC_DRAW);
-	m_lights->unbind(GL_UNIFORM_BUFFER);
-
-    auto uniformBlock = m_program->uniformBlock("Lights");
-	m_lights->bindBase(GL_UNIFORM_BUFFER, 0);
-	uniformBlock->setBinding(0);
 }
 
 void MassiveLightingRenderStage::process()
@@ -153,27 +136,6 @@ void MassiveLightingRenderStage::process()
 
     if(drawables.hasChanged())
     {
-        rerender = true;
-    }
-    if(lights.hasChanged())
-    {
-        GPULights gpuLights;
-        gpuLights.ambient_color = glm::vec4(1, 1, 1, 1);
-        gpuLights.number_of_lights = lights.data().size();
-
-        for (auto i = 0; i < lights.data().size() && i < MAX_LIGHTS; i++)
-        {
-            GPULight gpuLight;
-            auto & inLight = lights.data()[i];
-            gpuLight.position = glm::vec4(inLight->position(), inLight->type());
-            gpuLight.color = glm::vec4(inLight->colorDiffuse(), 1.f);
-            gpuLight.attenuation = glm::vec4(inLight->attenuationConst(), inLight->attenuationLinear(), inLight->attenuationQuad(), 0.9f); //spotlight exponent is not imported
-            gpuLights.lights[i] = gpuLight;
-        }
-
-        m_lights->bind(GL_UNIFORM_BUFFER);
-        m_lights->setData(sizeof(gpuLights), &gpuLights, GL_DYNAMIC_DRAW);
-        m_lights->unbind(GL_UNIFORM_BUFFER);
         rerender = true;
     }
 
