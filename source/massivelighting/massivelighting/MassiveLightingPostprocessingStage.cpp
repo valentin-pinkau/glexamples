@@ -9,9 +9,10 @@
 #include <globjects/Shader.h>
 
 #include <gloperate/painter/AbstractViewportCapability.h>
+#include <gloperate/painter/AbstractProjectionCapability.h>
+#include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 #include <gloperate/primitives/ScreenAlignedQuad.h>
-
 
 
 MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
@@ -36,6 +37,8 @@ void MassiveLightingPostprocessingStage::initialize()
         globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
     );
 
+	m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transform", glm::mat4()));
+	m_uniforms.addUniform(new globjects::Uniform<glm::vec3>("eye", glm::vec3()));
 	m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
 	m_uniforms.addUniform(new globjects::Uniform<int>("normalTexture", 1));
 	m_uniforms.addUniform(new globjects::Uniform<int>("depthTexture", 2));
@@ -46,6 +49,14 @@ void MassiveLightingPostprocessingStage::initialize()
 
 void MassiveLightingPostprocessingStage::process()
 {
+	if (camera.hasChanged() || projection.hasChanged())
+	{
+		const auto transform = projection.data()->projection() * camera.data()->view();
+		const auto eye = camera.data()->eye();
+		m_uniforms.uniform<glm::mat4>("transform")->set(transform);
+		m_uniforms.uniform<glm::vec3>("eye")->set(eye);
+	}
+
     if(!m_fbo)
     {
         m_fbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();

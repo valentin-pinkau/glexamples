@@ -22,6 +22,8 @@ namespace gloperate
 {
 
 class AbstractViewportCapability;
+class AbstractProjectionCapability;
+class AbstractCameraCapability;
 class AbstractTargetFramebufferCapability;
 class ScreenAlignedQuad;
 
@@ -34,7 +36,9 @@ public:
 
     virtual void initialize() override;
 public:
-    gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
+	gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
+	gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
+	gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> colorTexture;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> depthTexture;
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> normalTexture;
