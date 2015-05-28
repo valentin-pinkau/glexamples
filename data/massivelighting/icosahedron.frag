@@ -20,7 +20,7 @@ uniform vec3 eye;
 uniform sampler2D material;
 
 const float material_ambient_factor = 0.2;
-const float material_diffuse_factor = 0.3;
+const float material_diffuse_factor = 0.5;
 const float material_specular_factor = 0.6;
 const float material_shininess_factor = 16;
 
@@ -63,7 +63,7 @@ void main()
         continue;
       }
       //spot light
-      else if (lights[i].position.w > 1.0) {
+      else if (lights[i].position.w > 2.0) {
         float spot_cos_cutoff = lights[i].multiuse.w;
         float spot_exponent = lights[i].attenuation.w;
         vec3  spot_direction = lights[i].multiuse.xyz;

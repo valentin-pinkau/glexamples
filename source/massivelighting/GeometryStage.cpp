@@ -11,6 +11,7 @@
 #include <gloperate/primitives/Scene.h>
 #include <gloperate/primitives/PolygonalDrawable.h> 
 #include <gloperate/primitives/PolygonalGeometry.h>
+#include <gloperate/primitives/Light.h>
 
 #include <iostream>
 
@@ -24,6 +25,7 @@ GeometryStage::GeometryStage()
 
     addOutput("drawables", drawables);
 	addOutput("materials", materials);
+    addOutput("lights", lights);
 }
 
 void GeometryStage::initialize()
@@ -90,12 +92,18 @@ void GeometryStage::reloadScene()
 
 	drawables->clear();
 	materials->clear();
+    lights->clear();
 
 	for (const auto & geometry : scene->meshes())
 	{
 		drawables->push_back(make_unique<gloperate::PolygonalDrawable>(*geometry));
 		materials->push_back(materialsMap[geometry->materialIndex()]);
 	}
+
+    for (const auto light : scene->lights())
+    {
+        lights->push_back(make_unique<gloperate::Light>(*light));
+    }
 
 	delete scene;
 }

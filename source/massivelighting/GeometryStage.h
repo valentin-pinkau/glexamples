@@ -12,6 +12,7 @@
 #include <gloperate/pipeline/Data.h>
 #include <gloperate/pipeline/InputSlot.h>
 #include <gloperate/primitives/PolygonalDrawable.h>
+#include <gloperate/primitives/Light.h>
 
 #include <reflectionzeug/FilePath.h>
 
@@ -38,6 +39,7 @@ public:
 	gloperate::InputSlot<gloperate::ResourceManager *> resourceManager;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
 	gloperate::Data<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
+    gloperate::Data<std::vector<std::unique_ptr<gloperate::Light>>> lights;
 
 protected:
     virtual void process() override;
