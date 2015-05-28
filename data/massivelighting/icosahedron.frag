@@ -63,7 +63,7 @@ void main()
         continue;
       }
       //spot light
-      else if (lights[i].position.w > 1.0) {
+      else if (lights[i].position.w > 2.0) {
         float spot_cos_cutoff = lights[i].multiuse.w;
         float spot_exponent = lights[i].attenuation.w;
         vec3  spot_direction = lights[i].multiuse.xyz;
