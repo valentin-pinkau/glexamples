@@ -15,6 +15,7 @@ namespace globjects
 class Framebuffer;
 class Program;
 class Texture;
+class Buffer;
 
 }
 
@@ -35,6 +36,7 @@ public:
     virtual void initialize() override;
 public:
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
+    gloperate::InputSlot<globjects::ref_ptr<globjects::Buffer>> lightsBuffer;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> colorTexture;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> depthTexture;
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> normalTexture;

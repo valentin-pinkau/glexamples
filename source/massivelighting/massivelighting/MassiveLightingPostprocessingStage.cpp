@@ -21,6 +21,7 @@ MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
     alwaysProcess(true);
 
     addInput("viewport", viewport);
+    addInput("lights Buffer", lightsBuffer);
 	addInput("colorTexture", colorTexture);
 	addInput("normalTexture", normalTexture);
     addInput("depthTexture", depthTexture);
@@ -51,6 +52,14 @@ void MassiveLightingPostprocessingStage::process()
         m_fbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
     }
     m_fbo->bind();
+
+    if(lightsBuffer.hasChanged())
+    {
+        auto uniformBlock = m_program->uniformBlock("Lights");
+        lightsBuffer.data()->bindBase(gl::GL_UNIFORM_BUFFER, 0);
+        uniformBlock->setBinding(0);
+    }
+
     gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 
     colorTexture.data()->bindActive(gl::GL_TEXTURE0);
