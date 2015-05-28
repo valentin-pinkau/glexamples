@@ -21,7 +21,8 @@ MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
     alwaysProcess(true);
 
     addInput("viewport", viewport);
-    addInput("colorTexture", colorTexture);
+	addInput("colorTexture", colorTexture);
+	addInput("normalTexture", normalTexture);
     addInput("depthTexture", depthTexture);
     addOptionalInput("targetFBO", targetFBO);
 }
@@ -35,8 +36,9 @@ void MassiveLightingPostprocessingStage::initialize()
         globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
     );
 
-    m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
-    m_uniforms.addUniform(new globjects::Uniform<int>("depthTexture", 1));
+	m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
+	m_uniforms.addUniform(new globjects::Uniform<int>("normalTexture", 1));
+	m_uniforms.addUniform(new globjects::Uniform<int>("depthTexture", 2));
     m_uniforms.addToProgram(m_program);
 
     m_screenAlignedQuad = new gloperate::ScreenAlignedQuad(m_program);
@@ -52,11 +54,13 @@ void MassiveLightingPostprocessingStage::process()
     gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 
     colorTexture.data()->bindActive(gl::GL_TEXTURE0);
-    depthTexture.data()->bindActive(gl::GL_TEXTURE1);
+    normalTexture.data()->bindActive(gl::GL_TEXTURE1);
+	depthTexture.data()->bindActive(gl::GL_TEXTURE2);
 
     m_screenAlignedQuad->draw();
 
-    depthTexture.data()->unbindActive(gl::GL_TEXTURE1);
+    depthTexture.data()->unbindActive(gl::GL_TEXTURE2);
+	normalTexture.data()->unbindActive(gl::GL_TEXTURE1);
     colorTexture.data()->unbindActive(gl::GL_TEXTURE0);
     m_fbo->unbind();
 }

@@ -175,6 +175,11 @@ void MassiveLightingRenderStage::render()
 
 
     m_fbo->bind(GL_FRAMEBUFFER);
+	m_fbo->setDrawBuffers({
+		GL_COLOR_ATTACHMENT0,
+		GL_COLOR_ATTACHMENT1,
+		GL_COLOR_ATTACHMENT2,
+		GL_COLOR_ATTACHMENT3 });
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

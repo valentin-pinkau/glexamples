@@ -37,6 +37,7 @@ public:
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> colorTexture;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> depthTexture;
+	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> normalTexture;
     gloperate::InputSlot<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
 protected:
     globjects::ref_ptr<globjects::Framebuffer> m_fbo;

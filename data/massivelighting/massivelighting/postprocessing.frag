@@ -2,6 +2,7 @@
 #extension GL_ARB_explicit_attrib_location : require
 
 uniform sampler2D colorTexture;
+uniform sampler2D normalTexture;
 uniform sampler2D depthTexture;
 
 layout (location = 0) out vec4 fragColor;

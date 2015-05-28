@@ -10,13 +10,13 @@ GLOPERATE_PLUGIN_LIBRARY
 
     GLOPERATE_PLUGIN(MassiveLightingPainter
     , "MassiveLighting"
-    , "Deffered lighting with many lights"
+    , "Deferred lighting with many lights"
     , GLEXAMPLES_AUTHOR_ORGANIZATION
     , "v0.0.1" )
 
 	GLOPERATE_PLUGIN(BasicLightingPainter
 	, "BasicLighting"
-	, "Deffered lighting with many lights"
+	, "Basic lighting with few lights"
 	, GLEXAMPLES_AUTHOR_ORGANIZATION
 	, "v0.0.1")
 
