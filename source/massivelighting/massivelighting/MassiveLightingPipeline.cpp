@@ -34,6 +34,8 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
     postprocessingStage->viewport = viewport;
     postprocessingStage->lightsBuffer = geometryStage->lightsBuffer;
+	postprocessingStage->camera = camera;
+	postprocessingStage->projection = projection;
 	postprocessingStage->colorTexture = renderStage->colorTexture;
 	postprocessingStage->normalTexture = renderStage->normalTexture;
     postprocessingStage->depthTexture = renderStage->depthBufferTexture;
