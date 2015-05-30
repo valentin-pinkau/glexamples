@@ -38,7 +38,7 @@ void MassiveLightingPostprocessingStage::initialize()
         globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
     );
 
-	m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transform", glm::mat4()));
+	m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transformInverted", glm::mat4()));
 	m_uniforms.addUniform(new globjects::Uniform<glm::vec3>("eye", glm::vec3()));
 	m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
 	m_uniforms.addUniform(new globjects::Uniform<int>("normalTexture", 1));
@@ -52,9 +52,9 @@ void MassiveLightingPostprocessingStage::process()
 {
 	if (camera.hasChanged() || projection.hasChanged())
 	{
-		const auto transform = projection.data()->projection() * camera.data()->view();
+		const auto transformInverted = camera.data()->viewInverted() * projection.data()->projectionInverted();
 		const auto eye = camera.data()->eye();
-		m_uniforms.uniform<glm::mat4>("transform")->set(transform);
+		m_uniforms.uniform<glm::mat4>("transformInverted")->set(transformInverted);
 		m_uniforms.uniform<glm::vec3>("eye")->set(eye);
 	}
 
@@ -64,7 +64,7 @@ void MassiveLightingPostprocessingStage::process()
     }
     m_fbo->bind();
 
-    if(lightsBuffer.hasChanged())
+    if(lightsBuffer.hasChanged() && lightsBuffer.data())
     {
         auto uniformBlock = m_program->uniformBlock("Lights");
         lightsBuffer.data()->bindBase(gl::GL_UNIFORM_BUFFER, 0);
