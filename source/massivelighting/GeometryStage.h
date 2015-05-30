@@ -36,7 +36,7 @@ multiuse		not used								vec4(spotDirection.xyz,spotCosCutOf)				vec4(planeNorm
 
 */
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 256
 
 struct GPULight
 {

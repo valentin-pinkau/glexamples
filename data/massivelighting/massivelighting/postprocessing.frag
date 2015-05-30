@@ -18,7 +18,7 @@ in vec2 v_screenCoordinates;
 
 layout (location = 0) out vec4 fragColor;
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 256
 
 struct Light {
 	vec4 position;
