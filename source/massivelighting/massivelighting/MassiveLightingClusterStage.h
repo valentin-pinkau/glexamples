@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 #include <globjects/base/ref_ptr.h>
 
@@ -14,10 +15,12 @@
 namespace globjects
 {
 	class Buffer;
+    class Texture;
 }
 
 class MassiveLightingClusterStage : public gloperate::AbstractStage
 {
+    static const int xResolution = 4, yResolution = 4,  zResolution = 4;
 public:
     MassiveLightingClusterStage();
     virtual ~MassiveLightingClusterStage() = default;
@@ -30,7 +33,10 @@ public:
 
 protected:
     virtual void process() override;
+    void createCluster();
 
 protected:
+    globjects::ref_ptr<globjects::Texture> m_clusterTexture;
+    std::vector<int> m_cluster[xResolution][yResolution][zResolution];
 
 };
