@@ -1,6 +1,6 @@
 #version 150 core
 
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 256
 
 struct Light {
 	vec4 position;
