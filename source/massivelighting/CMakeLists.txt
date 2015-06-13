@@ -44,6 +44,7 @@ set(sources
 	${source_path}/massivelighting/MassiveLightingPainter.cpp
     ${source_path}/massivelighting/MassiveLightingPipeline.cpp
     ${source_path}/massivelighting/MassiveLightingRenderStage.cpp
+    ${source_path}/massivelighting/MassiveLightingClusterStage.cpp
     ${source_path}/massivelighting/MassiveLightingPostprocessingStage.cpp
     ${source_path}/plugin.cpp
 )
@@ -57,6 +58,7 @@ set(api_includes
 	${include_path}/massivelighting/MassiveLightingPainter.h
     ${include_path}/massivelighting/MassiveLightingPipeline.h
     ${include_path}/massivelighting/MassiveLightingRenderStage.h
+    ${include_path}/massivelighting/MassiveLightingClusterStage.h
     ${include_path}/massivelighting/MassiveLightingPostprocessingStage.h
 )
 
