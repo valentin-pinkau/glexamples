@@ -102,10 +102,9 @@ void GeometryStage::reloadScene()
 		materials->push_back(materialsMap[geometry->materialIndex()]);
 	}
 
-
-    GPULights gpuLights;
-    gpuLights.ambient_color = glm::vec4(1, 1, 1, 1);
-    gpuLights.number_of_lights = scene->lights().size();
+	GPULights newGpuLights;
+	newGpuLights.ambient_color = glm::vec4(1, 1, 1, 1);
+	newGpuLights.number_of_lights = scene->lights().size();
 
     for (auto i = 0; i < scene->lights().size() && i < MAX_LIGHTS; i++)
     {
@@ -114,14 +113,14 @@ void GeometryStage::reloadScene()
         gpuLight.position = glm::vec4(inLight->position(), inLight->type());
         gpuLight.color = glm::vec4(inLight->colorDiffuse(), 1.f);
         gpuLight.attenuation = glm::vec4(inLight->attenuationConst(), inLight->attenuationLinear(), inLight->attenuationQuad(), 0.9f); //spotlight exponent is not imported
-        gpuLights.lights[i] = gpuLight;
+		newGpuLights.lights[i] = gpuLight;
     }
 
     lightsBuffer.data()->bind(GL_UNIFORM_BUFFER);
-    lightsBuffer.data()->setData(sizeof(gpuLights), &gpuLights, GL_DYNAMIC_DRAW);
+	lightsBuffer.data()->setData(sizeof(newGpuLights), &newGpuLights, GL_DYNAMIC_DRAW);
     lightsBuffer.data()->unbind(GL_UNIFORM_BUFFER);
 
-
+	gpuLights.setData(newGpuLights);
 
 	delete scene;
 }

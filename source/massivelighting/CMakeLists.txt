@@ -51,6 +51,7 @@ set(sources
 
 set(api_includes
     ${include_path}/GeometryStage.h
+	${include_path}/GPULights.h
     ${include_path}/basiclighting/BasicLightingPainter.h
     ${include_path}/basiclighting/BasicLightingPipeline.h
     ${include_path}/basiclighting/BasicLightingRenderStage.h

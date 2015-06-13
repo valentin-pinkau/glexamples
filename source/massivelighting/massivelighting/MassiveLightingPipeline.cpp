@@ -1,6 +1,7 @@
 #include "GeometryStage.h"
 #include "MassiveLightingPipeline.h"
 #include "MassiveLightingRenderStage.h"
+#include "MassiveLightingClusterStage.h"
 #include "MassiveLightingPostprocessingStage.h"
 
 #include <gloperate/base/make_unique.hpp>
@@ -21,6 +22,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
     auto geometryStage = new GeometryStage();
     auto renderStage = new MassiveLightingRenderStage();
+	auto clusterStage = new MassiveLightingClusterStage();
     auto postprocessingStage = new MassiveLightingPostprocessingStage();
 
     geometryStage->sceneFilePath = sceneFilePath;
@@ -31,6 +33,10 @@ MassiveLightingPipeline::MassiveLightingPipeline()
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;
+
+	clusterStage->camera = camera;
+	clusterStage->projection = projection;
+	clusterStage->gpuLights = geometryStage->gpuLights;
 
     postprocessingStage->viewport = viewport;
     postprocessingStage->lightsBuffer = geometryStage->lightsBuffer;
@@ -45,6 +51,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
     addStages(
         geometryStage,
         renderStage,
+		clusterStage,
         postprocessingStage
     );
 }
