@@ -27,12 +27,108 @@ struct Light {
   vec4 multiuse;
 };
 
+struct LightingInfo {
+  vec3 diffuse;
+  vec3 specular;
+};
+
 layout (std140) uniform Lights
 {
 		vec4 ambient_color;
 		Light lights[MAX_LIGHTS];
 		uint number_of_lights;
 };
+
+vec3 base_color()
+{
+	return texture(colorTexture, v_uv).rgb;
+}
+
+float attenuation(
+float light_attenuation_factor,
+float light_constant_attenuation,
+float light_linear_attenuation,
+float light_quadratic_attenuation,
+float light_distance) {
+  return light_attenuation_factor / (light_constant_attenuation +
+                  light_linear_attenuation * light_distance +
+                  light_quadratic_attenuation * light_distance * light_distance);
+}
+
+LightingInfo unidirectionalLighting(
+vec3 v_eye,
+vec3 worldCoordinates,
+vec3 v_normal,
+vec3 light_position,
+vec3 light_color,
+float light_constant_attenuation,
+float light_linear_attenuation,
+float light_quadratic_attenuation,
+float material_shininess_factor
+) {
+    LightingInfo result;
+    vec3 view_direction = normalize(v_eye - worldCoordinates);
+    vec3 light_direction = light_position - worldCoordinates;
+    float light_distance = length(light_direction);
+		float NdotL = max(dot(normalize(light_direction), v_normal), 0.0);
+    //only shade front face
+    if (NdotL > 0.0) {
+      float att = attenuation(1.0, light_constant_attenuation, light_linear_attenuation, light_quadratic_attenuation, light_distance);
+                     
+      vec3 half_direction = normalize(light_direction + view_direction);
+      float specular_angle = max(dot(half_direction, v_normal), 0.0);
+      float specular_intensity = pow(specular_angle, material_shininess_factor);
+      
+      result.diffuse = att * light_color * NdotL;
+      result.specular = vec3(att * specular_intensity * light_color);
+    }
+    else {
+      result.diffuse = vec3(0);
+      result.specular = vec3(0);
+    }
+    return result;
+}
+
+LightingInfo spotLighting(
+vec3 v_eye,
+vec3 worldCoordinates,
+vec3 v_normal,
+vec3 light_position,
+vec3 light_color,
+float light_constant_attenuation,
+float light_linear_attenuation,
+float light_quadratic_attenuation,
+float spot_cos_cutoff,
+float spot_exponent,
+vec3  spot_direction,
+float material_shininess_factor
+) {    
+  LightingInfo result;
+  vec3 view_direction = normalize(v_eye - worldCoordinates);
+  vec3 light_direction = light_position - worldCoordinates;
+  float light_distance = length(light_direction);
+  float NdotL = max(dot(normalize(light_direction), v_normal), 0.0); 
+  //only shade front face
+  if (NdotL > 0.0) {
+    float light_attenuation_factor = dot(normalize(spot_direction), normalize(-light_direction));
+    //if fragment is outside spot cone
+    if (light_attenuation_factor > 0 || abs(light_attenuation_factor) < spot_cos_cutoff) { return result; }
+
+    light_attenuation_factor = pow(light_attenuation_factor, spot_exponent);                          
+    float att = attenuation(light_attenuation_factor, light_constant_attenuation, light_linear_attenuation, light_quadratic_attenuation, light_distance);
+                      
+    vec3 half_direction = normalize(light_direction + view_direction);
+    float specular_angle = max(dot(half_direction, v_normal), 0.0);
+    float specular_intensity = pow(specular_angle, material_shininess_factor);
+    result.diffuse = att * light_color * NdotL;
+    result.specular = vec3(light_color);
+  }
+  else {
+    result.diffuse = vec3(0);
+    result.specular = vec3(0);
+  }
+  return result;
+}
 
 void main()
 {
@@ -42,63 +138,54 @@ void main()
     vec4 almostWorldCoordinates = transformInverted * vec4(v_screenCoordinates, depth * 2.0 - 1.0, 1);
     vec4 worldCoordinates = vec4(almostWorldCoordinates.xyz / almostWorldCoordinates.w, 1);
 
-    // SNIP
-    vec3 view_direction = normalize(eye - worldCoordinates.xyz);
 
   	vec3 ambient = ambient_color.rgb;
   	vec3 diffuse = vec3(0);
   	vec3 specular = vec3(0);
 
   	for (uint i = 0u; i < number_of_lights; ++i)
-  	{
-      float light_constant_attenuation = lights[i].attenuation.x;
-      float light_linear_attenuation = lights[i].attenuation.y;
-      float light_quadratic_attenuation = lights[i].attenuation.z;
-
-      vec3 light_direction = lights[i].position.xyz - worldCoordinates.xyz;
-      float light_distance = length(light_direction);
-  		float NdotL = max(dot(normalize(light_direction), normal), 0.0);
-      float light_attenuation_factor = 1.0;
-      //only shade front face
-      if (NdotL > 0.0) {
-        //area
-        if (lights[i].position.w > 3.0) {
-          continue;
-        }
-        //spot light
-        else if (lights[i].position.w > 2.0) {
-          float spot_cos_cutoff = lights[i].multiuse.w;
-          float spot_exponent = lights[i].attenuation.w;
-          vec3  spot_direction = lights[i].multiuse.xyz;
-
-          float light_attenuation_factor = dot(normalize(spot_direction), normalize(-light_direction));
-          //if fragment is outside spot cone
-          if (light_attenuation_factor > 0 || abs(light_attenuation_factor) < spot_cos_cutoff) { continue; }
-          light_attenuation_factor = pow(light_attenuation_factor, spot_exponent);
-        }
-        //uni
-        else {
-
-        }
-
-        float att = light_attenuation_factor / (light_constant_attenuation +
-                    light_linear_attenuation * light_distance +
-                    light_quadratic_attenuation * light_distance * light_distance);
-
-        diffuse += att * lights[i].color.xyz * NdotL;
-
-        vec3 half_direction = normalize((light_direction + view_direction) /2);
-        float specular_angle = max(dot(half_direction, normal), 0.0);
-        float specular_intensity = pow(specular_angle, material_shininess_factor);
-        specular += att * specular_intensity;
+    {
+      LightingInfo lighting;
+      //spot light
+      if (lights[i].position.w > 2.0) {
+        lighting = spotLighting(
+          eye,
+          worldCoordinates.xyz,
+          normal,
+          lights[i].position.xyz,
+          lights[i].color.rgb,
+          lights[i].attenuation.x,
+          lights[i].attenuation.y,
+          lights[i].attenuation.z,
+          lights[i].multiuse.w,
+          lights[i].attenuation.w,
+          lights[i].multiuse.xyz,
+          material_shininess_factor
+        );
       }
-  	}
+      //uni
+      else {
+        lighting = unidirectionalLighting(
+          eye,
+          worldCoordinates.xyz,
+          normal,
+          lights[i].position.xyz,
+          lights[i].color.rgb,
+          lights[i].attenuation.x,
+          lights[i].attenuation.y,
+          lights[i].attenuation.z,
+          material_shininess_factor
+        );
+      }
+      diffuse += lighting.diffuse;
+      specular += lighting.specular;
+    }
 
   	vec3 combined_lighting = material_ambient_factor * ambient
-                           + material_diffuse_factor * diffuse
-                           + material_specular_factor * specular;
+                             + material_diffuse_factor * diffuse
+                             + material_specular_factor * specular;
 
-  	vec3 lighted_color = texture(colorTexture, v_uv).rgb * min(combined_lighting, 1);
+  	vec3 lighted_color = base_color() * min(combined_lighting, 1);
     // SNAP
 
     fragColor = vec4(lighted_color, 1);
