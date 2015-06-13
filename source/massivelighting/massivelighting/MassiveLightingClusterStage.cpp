@@ -70,5 +70,23 @@ void MassiveLightingClusterStage::createCluster()
         }
     }
 
+    int currentOffset = 0;
+    for (int z = 0; z < zResolution; ++z)
+    {
+        for (int y = 0; y < yResolution; ++y)
+        {
+            for (int x = 0; x < xResolution; ++x)
+            {
+                for (int lightIdx : m_cluster[x][y][z])
+                {
+                    m_indices.push_back(lightIdx);
+                }
+
+                int count = m_cluster[x][y][z].size();
+                m_lookUp[x + y * xResolution + z * xResolution * yResolution] = glm::ivec2(currentOffset, count);
+                currentOffset += count;
+            }
+        }
+    }
 }
 

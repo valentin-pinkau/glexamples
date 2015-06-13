@@ -38,5 +38,7 @@ protected:
 protected:
     globjects::ref_ptr<globjects::Texture> m_clusterTexture;
     std::vector<int> m_cluster[xResolution][yResolution][zResolution];
+    std::vector<int> m_indices;
+    glm::ivec2 m_lookUp[xResolution * yResolution * zResolution];
 
 };
