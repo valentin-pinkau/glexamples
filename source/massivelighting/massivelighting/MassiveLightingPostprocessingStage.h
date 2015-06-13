@@ -53,4 +53,3 @@ protected:
 
     virtual void process() override;
 };
-
