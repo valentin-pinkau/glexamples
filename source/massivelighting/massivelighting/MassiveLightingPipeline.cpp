@@ -36,7 +36,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
 	clusterStage->camera = camera;
 	clusterStage->projection = projection;
-	clusterStage->lightsBuffer = geometryStage->lightsBuffer;
+	clusterStage->gpuLights = geometryStage->gpuLights;
 
     postprocessingStage->viewport = viewport;
     postprocessingStage->lightsBuffer = geometryStage->lightsBuffer;

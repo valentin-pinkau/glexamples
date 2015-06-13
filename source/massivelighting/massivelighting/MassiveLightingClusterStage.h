@@ -9,6 +9,8 @@
 #include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractProjectionCapability.h>
 
+#include "GPULights.h"
+
 namespace globjects
 {
 	class Buffer;
@@ -22,7 +24,7 @@ public:
     virtual void initialize() override;
 
 public:
-	gloperate::InputSlot<globjects::ref_ptr<globjects::Buffer>> lightsBuffer;
+	gloperate::InputSlot<GPULights> gpuLights;
 	gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
 	gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
 
