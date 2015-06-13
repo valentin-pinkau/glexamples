@@ -190,7 +190,21 @@ void main()
 	{
     vec2 lighting;
     if (lights[i].position.w > 3.0) {
-        //lighting = areaLighting();
+      lighting = areaLighting(
+      eye,
+      v_vertex,
+      normal,
+      lights[i].position.xyz,
+      lights[i].multiuse.xyz,
+      vec3(0,0,1),
+      vec3(0,1,0),
+      lights[i].attenuation.w,
+      lights[i].multiuse.w,
+      lights[i].color.rgb,
+      lights[i].attenuation.x,
+      lights[i].attenuation.y,
+      lights[i].attenuation.z,
+      material_shininess_factor);
       }
       //spot light
       else if (lights[i].position.w > 1.0) {
@@ -211,6 +225,7 @@ void main()
       }
       //uni
       else {
+        continue;
         lighting = unidirectionalLighting(
           eye,
           v_vertex,

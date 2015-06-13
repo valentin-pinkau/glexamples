@@ -133,7 +133,8 @@ void MassiveLightingRenderStage::setupUniforms()
 		{
 			 //type position:           color:                 attenuation:            multiuse
 			{ glm::vec4(0, 5, 5, 0), glm::vec4(1, 1, 0, 1), glm::vec4(1, 0, 0, 0), glm::vec4(0, 0, 0, 0) },
-			{ glm::vec4(0, 5, -5, 2), glm::vec4(0, 0, 1, 1), glm::vec4(1, 0, 0, 20), glm::vec4(1, 0, 0, 0.9) }
+			//{ glm::vec4(0, 5, -5, 2), glm::vec4(0, 0, 1, 1), glm::vec4(1, 0, 0, 20), glm::vec4(1, 0, 0, 0.9) },
+			{ glm::vec4(0, 5, -5, 4), glm::vec4(0, 0, 1, 1), glm::vec4(1, 0, 0, 1), glm::vec4(1, 0, 0, 1) }
 		}, 2 // number_of_lights
 	};
 
