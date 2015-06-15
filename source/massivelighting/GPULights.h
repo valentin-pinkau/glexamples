@@ -13,6 +13,7 @@ multiuse		not used								vec4(spotDirection.xyz,spotCosCutOf)				vec4(planeNorm
 */
 
 #define MAX_LIGHTS 256
+#define MAX_LIGHT_INDICES 4096
 
 typedef struct
 {

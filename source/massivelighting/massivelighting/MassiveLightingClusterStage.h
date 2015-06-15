@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <array>
 
 #include <globjects/base/ref_ptr.h>
 
@@ -31,13 +32,12 @@ public:
 	gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
 	gloperate::Data<globjects::ref_ptr<globjects::Texture>> clusterTexture;
 	gloperate::Data<globjects::ref_ptr<globjects::Buffer>> lightIndicesBuffer;
-	
 
 protected:
     virtual void process() override;
     void createCluster();
 
-    std::vector<int> m_cluster[xResolution][yResolution][zResolution];    
+    std::vector<int> m_cluster[xResolution][yResolution][zResolution];
     glm::ivec2 m_lookUp[xResolution * yResolution * zResolution];
-	std::vector<int> m_indices;
+	std::array<int, MAX_LIGHT_INDICES> m_indices;
 };

@@ -48,7 +48,7 @@ void MassiveLightingClusterStage::process()
         createCluster();
 
 		clusterTexture.data()->bind();
-		clusterTexture.data()->image3D(0, GL_RG32UI, xResolution, yResolution, zResolution, 0, GL_RG32UI, GL_UNSIGNED_INT, &m_lookUp);
+		clusterTexture.data()->image3D(0, GL_RG32UI, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_UNSIGNED_INT, &m_lookUp);
 		clusterTexture.data()->unbind();
 
 		lightIndicesBuffer.data()->bind(GL_UNIFORM_BUFFER);
@@ -110,7 +110,6 @@ void MassiveLightingClusterStage::createCluster()
     }
 
 	// Create index list and 3d texture data of clusters
-	m_indices.clear();
     int currentOffset = 0;
     for (int z = 0; z < zResolution; ++z)
     {
@@ -118,16 +117,14 @@ void MassiveLightingClusterStage::createCluster()
         {
             for (int x = 0; x < xResolution; ++x)
             {
+				int count = m_cluster[x][y][z].size();
+				m_lookUp[x + y * xResolution + z * xResolution * yResolution] = glm::ivec2(currentOffset, count);
+
                 for (int lightIdx : m_cluster[x][y][z])
                 {
-                    m_indices.push_back(lightIdx);
+                    m_indices[currentOffset++] = lightIdx;
                 }
-
-                int count = m_cluster[x][y][z].size();
-                m_lookUp[x + y * xResolution + z * xResolution * yResolution] = glm::ivec2(currentOffset, count);
-                currentOffset += count;
             }
         }
     }
 }
-
