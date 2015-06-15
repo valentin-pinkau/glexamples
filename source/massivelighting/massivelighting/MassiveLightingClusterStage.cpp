@@ -47,7 +47,7 @@ void MassiveLightingClusterStage::process()
     {
         createCluster();
 
-		clusterTexture.data()->image3D(0, GL_RG32UI, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_UNSIGNED_INT, &m_lookUp);
+		clusterTexture.data()->image3D(0, GL_RG32I, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_INT, m_lookUp);
 		
 		lightIndicesBuffer.data()->bind(GL_UNIFORM_BUFFER);
 		lightIndicesBuffer.data()->setData(m_indices, GL_DYNAMIC_DRAW);

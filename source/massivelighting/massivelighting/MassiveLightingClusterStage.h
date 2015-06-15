@@ -21,7 +21,7 @@ namespace globjects
 
 class MassiveLightingClusterStage : public gloperate::AbstractStage
 {
-    static const int xResolution = 4, yResolution = 4,  zResolution = 4;
+    static const int xResolution = 16, yResolution = 256,  zResolution = 256;
 public:
     MassiveLightingClusterStage();
     virtual ~MassiveLightingClusterStage() = default;
