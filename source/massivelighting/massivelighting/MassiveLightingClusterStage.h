@@ -26,19 +26,18 @@ public:
     virtual ~MassiveLightingClusterStage() = default;
     virtual void initialize() override;
 
-public:
 	gloperate::InputSlot<GPULights> gpuLights;
 	gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
 	gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
+	gloperate::Data<globjects::ref_ptr<globjects::Texture>> clusterTexture;
+	gloperate::Data<globjects::ref_ptr<globjects::Buffer>> lightIndicesBuffer;
+	
 
 protected:
     virtual void process() override;
     void createCluster();
 
-protected:
-    globjects::ref_ptr<globjects::Texture> m_clusterTexture;
-    std::vector<int> m_cluster[xResolution][yResolution][zResolution];
-    std::vector<int> m_indices;
+    std::vector<int> m_cluster[xResolution][yResolution][zResolution];    
     glm::ivec2 m_lookUp[xResolution * yResolution * zResolution];
-
+	std::vector<int> m_indices;
 };

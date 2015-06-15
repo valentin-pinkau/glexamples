@@ -9,9 +9,11 @@ const float material_shininess_factor = 16;
 uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D depthTexture;
+uniform sampler3D clusterTexture;
 
 uniform mat4 transformInverted;
 uniform vec3 eye;
+uniform ivec2 [] lightIndices;
 
 in vec2 v_uv;
 in vec2 v_screenCoordinates;

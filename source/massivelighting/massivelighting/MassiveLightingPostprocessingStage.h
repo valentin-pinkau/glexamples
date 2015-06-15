@@ -36,7 +36,7 @@ public:
     MassiveLightingPostprocessingStage();
 
     virtual void initialize() override;
-public:
+
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Buffer>> lightsBuffer;
 	gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
@@ -44,7 +44,10 @@ public:
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> colorTexture;
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> depthTexture;
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> normalTexture;
+	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> clusterTexture;
+	gloperate::InputSlot<globjects::ref_ptr<globjects::Buffer>> lightIndicesBuffer;
     gloperate::InputSlot<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
+
 protected:
     globjects::ref_ptr<globjects::Framebuffer> m_fbo;
     globjects::ref_ptr<globjects::Program> m_program;

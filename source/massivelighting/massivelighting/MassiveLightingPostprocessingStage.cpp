@@ -14,6 +14,7 @@
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 #include <gloperate/primitives/ScreenAlignedQuad.h>
 
+using namespace gl;
 
 MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
 : AbstractStage("Postprocessing")
@@ -34,8 +35,8 @@ void MassiveLightingPostprocessingStage::initialize()
     m_program = new globjects::Program{};
 
     m_program->attach(
-        globjects::Shader::fromFile(gl::GL_VERTEX_SHADER, "data/massivelighting/massivelighting/postprocessing.vert"),
-        globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
+        globjects::Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/massivelighting/postprocessing.vert"),
+        globjects::Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
     );
 
 	m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transformInverted", glm::mat4()));
@@ -43,6 +44,7 @@ void MassiveLightingPostprocessingStage::initialize()
 	m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
 	m_uniforms.addUniform(new globjects::Uniform<int>("normalTexture", 1));
 	m_uniforms.addUniform(new globjects::Uniform<int>("depthTexture", 2));
+	m_uniforms.addUniform(new globjects::Uniform<int>("clusterTexture", 3));
     m_uniforms.addToProgram(m_program);
 
     m_screenAlignedQuad = new gloperate::ScreenAlignedQuad(m_program);
@@ -58,30 +60,39 @@ void MassiveLightingPostprocessingStage::process()
 		m_uniforms.uniform<glm::vec3>("eye")->set(eye);
 	}
 
-    if(!m_fbo)
+    if (!m_fbo)
     {
         m_fbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
     }
     m_fbo->bind();
 
-    if(lightsBuffer.hasChanged() && lightsBuffer.data())
+    if (lightsBuffer.hasChanged() && lightsBuffer.data())
     {
         auto uniformBlock = m_program->uniformBlock("Lights");
-        lightsBuffer.data()->bindBase(gl::GL_UNIFORM_BUFFER, 0);
+        lightsBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 0);
         uniformBlock->setBinding(0);
     }
 
-    gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+	if (lightIndicesBuffer.hasChanged())
+	{
+		auto uniformBlock = m_program->uniformBlock("lightIndices");
+		lightIndicesBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 1);
+		uniformBlock->setBinding(1);
+	}
 
-    colorTexture.data()->bindActive(gl::GL_TEXTURE0);
-    normalTexture.data()->bindActive(gl::GL_TEXTURE1);
-	depthTexture.data()->bindActive(gl::GL_TEXTURE2);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    colorTexture.data()->bindActive(GL_TEXTURE0);
+    normalTexture.data()->bindActive(GL_TEXTURE1);
+	depthTexture.data()->bindActive(GL_TEXTURE2);
+	clusterTexture.data()->bindActive(GL_TEXTURE3);
 
     m_screenAlignedQuad->draw();
 
-    depthTexture.data()->unbindActive(gl::GL_TEXTURE2);
-	normalTexture.data()->unbindActive(gl::GL_TEXTURE1);
-    colorTexture.data()->unbindActive(gl::GL_TEXTURE0);
+	clusterTexture.data()->unbindActive(GL_TEXTURE3);
+    depthTexture.data()->unbindActive(GL_TEXTURE2);
+	normalTexture.data()->unbindActive(GL_TEXTURE1);
+    colorTexture.data()->unbindActive(GL_TEXTURE0);
     m_fbo->unbind();
 }
 
