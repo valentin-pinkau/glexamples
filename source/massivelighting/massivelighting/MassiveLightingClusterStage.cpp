@@ -47,10 +47,8 @@ void MassiveLightingClusterStage::process()
     {
         createCluster();
 
-		clusterTexture.data()->bind();
 		clusterTexture.data()->image3D(0, GL_RG32UI, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_UNSIGNED_INT, &m_lookUp);
-		clusterTexture.data()->unbind();
-
+		
 		lightIndicesBuffer.data()->bind(GL_UNIFORM_BUFFER);
 		lightIndicesBuffer.data()->setData(m_indices, GL_DYNAMIC_DRAW);
 		lightIndicesBuffer.data()->unbind(GL_UNIFORM_BUFFER);
@@ -61,6 +59,18 @@ void MassiveLightingClusterStage::process()
 
 void MassiveLightingClusterStage::createCluster()
 {
+	// Clear clusters
+	for (int z = 0; z < zResolution; ++z)
+	{
+		for (int y = 0; y < yResolution; ++y)
+		{
+			for (int x = 0; x < xResolution; ++x)
+			{
+				m_cluster[x][y][z].clear();
+			}
+		}
+	}
+
     const float attenuation_epsilon = 0.01f;
     for (int i = 0; i < gpuLights.data().number_of_lights; ++i)
     {
@@ -74,17 +84,21 @@ void MassiveLightingClusterStage::createCluster()
 
 		// Calculate distance where attenuation(d) = epsilon
         float linearAttenuation = light.attenuation.y;
-        float quadricAttenuation = light.attenuation.z;
+        float quadricAttenuation = light.attenuation.z + 0.1;
         float pHalf = (linearAttenuation / (quadricAttenuation * 2.0f));
         float influenceRadius = abs(- pHalf + sqrt(pHalf * pHalf - (1.0 / attenuation_epsilon * quadricAttenuation)));
-		
+
+		glm::vec4 influenceRadiusWorld = glm::vec4(lightPositionWorld.x + influenceRadius, lightPositionWorld.y, lightPositionWorld.z, 1.f);
+		glm::vec4 projectedInfluenceRadius = projection.data()->projection() * camera.data()->view() * influenceRadiusWorld;
+		float dist = glm::length(lightPositionScreen - projectedInfluenceRadius);
+
 		// Create AABB of light using the calculated distance
-		glm::vec3 llf = glm::vec3(lightPositionScreen.x - influenceRadius, 
-							      lightPositionScreen.y - influenceRadius, 
-								  lightPositionScreen.z - influenceRadius);
-		glm::vec3 urb = glm::vec3(lightPositionScreen.x + influenceRadius, 
-								  lightPositionScreen.y + influenceRadius, 
-								  lightPositionScreen.z + influenceRadius);
+		glm::vec4 llf = glm::vec4(lightPositionScreen.x - dist, 
+									   lightPositionScreen.y - dist, 
+									   lightPositionScreen.z - dist, 1.0f);
+		glm::vec4 urb = glm::vec4(lightPositionScreen.x + dist, 
+								       lightPositionScreen.y + dist, 
+								       lightPositionScreen.z + dist, 1.0f);
 
 		// Determine cluster coordinates of lower left front / upper right back
 		// vertices of AABB
@@ -99,8 +113,8 @@ void MassiveLightingClusterStage::createCluster()
                 for (int x = llfClusterIdx.x; x <= urbClusterIdx.x; ++x)
                 {
 					// If current cluster is not visible, skip it
-					if (x < 0 && y < 0 && z < 0 &&
-						x >= xResolution && y >= yResolution && z >= zResolution)
+					if (x < 0 || y < 0 || z < 0 ||
+						x >= xResolution || y >= yResolution || z >= zResolution)
 						continue;
 
                     m_cluster[x][y][z].push_back(i);
