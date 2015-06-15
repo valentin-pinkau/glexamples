@@ -7,14 +7,12 @@
 #include <glbinding/gl/functions.h>
 
 #include <globjects/Texture.h>
-#include <globjects/Buffer.h>
 
 using namespace gl;
 
 MassiveLightingClusterStage::MassiveLightingClusterStage()
 :   AbstractStage("MassiveLightingClusterStage")
 {
-
 }
 
 void MassiveLightingClusterStage::initialize()
@@ -28,9 +26,9 @@ void MassiveLightingClusterStage::initialize()
     texture->setParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	clusterTexture.setData(texture);
-
-
-	lightIndicesBuffer = globjects::make_ref<globjects::Buffer>();
+	
+	lightIndicesTexture = globjects::make_ref<globjects::Texture>(GL_TEXTURE_1D);
+	lightIndicesTexture.data()->setName("light indices Texture");
 }
 
 
@@ -48,12 +46,7 @@ void MassiveLightingClusterStage::process()
         createCluster();
 
 		clusterTexture.data()->image3D(0, GL_RG32I, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_INT, m_lookUp);
-		
-		lightIndicesBuffer.data()->bind(GL_UNIFORM_BUFFER);
-		lightIndicesBuffer.data()->setData(m_indices, GL_DYNAMIC_DRAW);
-		lightIndicesBuffer.data()->unbind(GL_UNIFORM_BUFFER);
-
-		invalidateOutputs();
+		lightIndicesTexture.data()->image1D(0, GL_R32I, m_indices.size(), 0, GL_R, GL_INT, m_indices.data());
     }	
 }
 
@@ -70,6 +63,7 @@ void MassiveLightingClusterStage::createCluster()
 			}
 		}
 	}
+	m_indices.clear();
 
     const float attenuation_epsilon = 0.01f;
     for (int i = 0; i < gpuLights.data().number_of_lights; ++i)
@@ -133,10 +127,11 @@ void MassiveLightingClusterStage::createCluster()
             {
 				int count = m_cluster[x][y][z].size();
 				m_lookUp[x + y * xResolution + z * xResolution * yResolution] = glm::ivec2(currentOffset, count);
-
+				currentOffset += count;
+				
                 for (int lightIdx : m_cluster[x][y][z])
                 {
-                    m_indices[currentOffset++] = lightIdx;
+                    m_indices.push_back(lightIdx);
                 }
             }
         }

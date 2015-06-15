@@ -27,6 +27,8 @@ MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
 	addInput("colorTexture", colorTexture);
 	addInput("normalTexture", normalTexture);
     addInput("depthTexture", depthTexture);
+	addInput("clusterTexture", clusterTexture);
+	addInput("lightIndicesTexture", lightIndicesTexture);
     addOptionalInput("targetFBO", targetFBO);
 }
 
@@ -45,6 +47,7 @@ void MassiveLightingPostprocessingStage::initialize()
 	m_uniforms.addUniform(new globjects::Uniform<int>("normalTexture", 1));
 	m_uniforms.addUniform(new globjects::Uniform<int>("depthTexture", 2));
 	m_uniforms.addUniform(new globjects::Uniform<int>("clusterTexture", 3));
+	m_uniforms.addUniform(new globjects::Uniform<int>("lightIndicesTexture", 4));
     m_uniforms.addToProgram(m_program);
 
     m_screenAlignedQuad = new gloperate::ScreenAlignedQuad(m_program);
@@ -73,22 +76,17 @@ void MassiveLightingPostprocessingStage::process()
         uniformBlock->setBinding(0);
     }
 
-	if (lightIndicesBuffer.hasChanged())
-	{
-		auto uniformBlock = m_program->uniformBlock("lightIndices");
-		lightIndicesBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 1);
-		uniformBlock->setBinding(1);
-	}
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     colorTexture.data()->bindActive(GL_TEXTURE0);
     normalTexture.data()->bindActive(GL_TEXTURE1);
 	depthTexture.data()->bindActive(GL_TEXTURE2);
 	clusterTexture.data()->bindActive(GL_TEXTURE3);
+	lightIndicesTexture.data()->bindActive(GL_TEXTURE4);
 
     m_screenAlignedQuad->draw();
 
+	lightIndicesTexture.data()->unbindActive(GL_TEXTURE4);
 	clusterTexture.data()->unbindActive(GL_TEXTURE3);
     depthTexture.data()->unbindActive(GL_TEXTURE2);
 	normalTexture.data()->unbindActive(GL_TEXTURE1);

@@ -45,7 +45,7 @@ public:
     gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> depthTexture;
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> normalTexture;
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> clusterTexture;
-	gloperate::InputSlot<globjects::ref_ptr<globjects::Buffer>> lightIndicesBuffer;
+	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> lightIndicesTexture;
     gloperate::InputSlot<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
 
 protected:

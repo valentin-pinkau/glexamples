@@ -21,7 +21,7 @@ namespace globjects
 
 class MassiveLightingClusterStage : public gloperate::AbstractStage
 {
-    static const int xResolution = 16, yResolution = 256,  zResolution = 256;
+    static const int xResolution = 4, yResolution = 4,  zResolution = 4;
 public:
     MassiveLightingClusterStage();
     virtual ~MassiveLightingClusterStage() = default;
@@ -31,7 +31,7 @@ public:
 	gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
 	gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
 	gloperate::Data<globjects::ref_ptr<globjects::Texture>> clusterTexture;
-	gloperate::Data<globjects::ref_ptr<globjects::Buffer>> lightIndicesBuffer;
+	gloperate::Data<globjects::ref_ptr<globjects::Texture>> lightIndicesTexture;
 
 protected:
     virtual void process() override;
@@ -39,5 +39,5 @@ protected:
 
     std::vector<int> m_cluster[xResolution][yResolution][zResolution];
     glm::ivec2 m_lookUp[xResolution * yResolution * zResolution];
-	std::array<int, MAX_LIGHT_INDICES> m_indices;
+	std::vector<int> m_indices;
 };

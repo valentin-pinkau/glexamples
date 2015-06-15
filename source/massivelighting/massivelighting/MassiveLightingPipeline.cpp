@@ -46,7 +46,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 	postprocessingStage->normalTexture = renderStage->normalTexture;
     postprocessingStage->depthTexture = renderStage->depthBufferTexture;
 	postprocessingStage->clusterTexture = clusterStage->clusterTexture;
-	postprocessingStage->lightIndicesBuffer = clusterStage->lightIndicesBuffer;
+	postprocessingStage->lightIndicesTexture = clusterStage->lightIndicesTexture;
     postprocessingStage->targetFBO = targetFBO;
 
 

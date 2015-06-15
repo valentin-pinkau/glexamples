@@ -2,7 +2,6 @@
 #extension GL_ARB_explicit_attrib_location : require
 
 #define MAX_LIGHTS 256
-#define MAX_LIGHT_INDICES 4096
 
 const float material_ambient_factor = 0.2;
 const float material_diffuse_factor = 0.5;
@@ -13,10 +12,10 @@ uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D depthTexture;
 uniform isampler3D clusterTexture;
+uniform isampler1D lightIndicesTexture;
 
 uniform mat4 transformInverted;
 uniform vec3 eye;
-uniform int[MAX_LIGHT_INDICES] lightIndices;
 
 in vec2 v_uv;
 in vec2 v_screenCoordinates;
@@ -145,11 +144,10 @@ void main()
   	vec3 diffuse = vec3(0);
   	vec3 specular = vec3(0);
 
-		// determine cluster
 		ivec2 lookup = texture(clusterTexture, vec3(v_uv, depth)).xy;
   	for (int li = 0; li < lookup.y; ++li)
     {
-			int i = lightIndices[lookup.x + li].x;
+			int i = texelFetch(lightIndicesTexture, lookup.x + li, 0).x;
 
       LightingInfo lighting;
       //spot light
