@@ -33,7 +33,6 @@ public:
     virtual ~GeometryStage() = default;
     virtual void initialize() override;
 
-public:
     gloperate::InputSlot<reflectionzeug::FilePath> sceneFilePath;
 	gloperate::InputSlot<gloperate::ResourceManager *> resourceManager;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;

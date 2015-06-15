@@ -135,11 +135,11 @@ void BasicLightingRenderStage::process()
 {
     auto rerender = false;
 
-    if(drawables.hasChanged())
+    if (drawables.hasChanged())
     {
         rerender = true;
     }
-    if(lightsBuffer.hasChanged())
+    if (lightsBuffer.hasChanged())
     {
         auto uniformBlock = m_program->uniformBlock("Lights");
         lightsBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 0);

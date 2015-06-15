@@ -38,12 +38,12 @@ void GeometryStage::process()
 {
     auto reload = false;
 
-    if(sceneFilePath.hasChanged() && sceneFilePath.data().string() != "")
+    if (sceneFilePath.hasChanged() && sceneFilePath.data().string() != "")
     {
         reload = true;
     }
 
-    if(reload)
+    if (reload)
     {
         reloadScene();
 
