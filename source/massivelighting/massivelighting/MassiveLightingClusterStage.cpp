@@ -26,9 +26,14 @@ void MassiveLightingClusterStage::initialize()
     texture->setParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	clusterTexture.setData(texture);
+
+    texture = globjects::make_ref<globjects::Texture>(GL_TEXTURE_1D);
+    texture->setName("light indices Texture");
+    texture->setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    texture->setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	
-	lightIndicesTexture = globjects::make_ref<globjects::Texture>(GL_TEXTURE_1D);
-	lightIndicesTexture.data()->setName("light indices Texture");
+    lightIndicesTexture.setData(texture);
 }
 
 
@@ -46,7 +51,7 @@ void MassiveLightingClusterStage::process()
         createCluster();
 
 		clusterTexture.data()->image3D(0, GL_RG32I, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_INT, m_lookUp);
-		lightIndicesTexture.data()->image1D(0, GL_R32I, m_indices.size(), 0, GL_R, GL_INT, m_indices.data());
+        lightIndicesTexture.data()->image1D(0, GL_R32I, m_indices.size(), 0, GL_RED_INTEGER, GL_INT, m_indices.data());
     }	
 }
 
