@@ -18,12 +18,13 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 
     ${GLM_INCLUDE_DIR}
-    ${GLBINDING_INCLUDES}
-    ${GLOBJECTS_INCLUDES}
-    ${GLOPERATE_INCLUDES}
-    ${LIBZEUG_INCLUDES}
+    ${GLBINDING_INCLUDE_DIRS}
+    ${GLOBJECTS_INCLUDE_DIRS}
+    ${GLOPERATE_INCLUDE_DIRS}
+    ${LIBZEUG_INCLUDE_DIRS}
 )
 
+# Define common libraries for all examples
 set(GLEXAMPLES_DEPENDENCY_LIBRARIES
     ${GLBINDING_LIBRARIES}
     ${GLOBJECTS_LIBRARIES}
@@ -34,6 +35,7 @@ set(GLEXAMPLES_DEPENDENCY_LIBRARIES
 # Applications
 set(IDE_FOLDER "")
 add_subdirectory(emptyexample)
+add_subdirectory(openglexample)
 add_subdirectory(massivelighting)
 add_subdirectory(transparency)
 add_subdirectory(glexamples-viewer)
