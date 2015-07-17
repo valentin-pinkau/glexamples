@@ -67,7 +67,6 @@ void BasicLightingRenderStage::initialize()
 }
 void BasicLightingRenderStage::setupGLState()
 {
-    globjects::init();
     glClearColor(0.f, 0.f, 0.f, 1.0f);
 }
 
@@ -100,7 +99,7 @@ void BasicLightingRenderStage::resizeFbos(int width, int height)
 
 void BasicLightingRenderStage::setupFbo()
 {
-    const auto createTexture = [] (const std::string & name)
+    static const auto createTexture = [] (const std::string & name)
     {
         auto tex = Texture::createDefault(GL_TEXTURE_2D);
         tex->setName(name);
@@ -112,7 +111,6 @@ void BasicLightingRenderStage::setupFbo()
     normalTexture.data() = createTexture("Normal Texture");
     geometryTexture.data() = createTexture("Geometry Texture");
     depthBufferTexture.data() = createTexture("Depth Texture");
-
     m_fbo = make_ref<globjects::Framebuffer>();
     m_fbo->setName("Render FBO");
 

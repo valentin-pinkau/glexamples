@@ -46,10 +46,8 @@ void GeometryStage::process()
     if (reload)
     {
         reloadScene();
-
         invalidateOutputs();
     }
-
 }
 
 void GeometryStage::reloadScene()

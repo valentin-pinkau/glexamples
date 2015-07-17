@@ -66,7 +66,6 @@ void MassiveLightingRenderStage::initialize()
 }
 void MassiveLightingRenderStage::setupGLState()
 {
-    globjects::init();
     glClearColor(0.f, 0.f, 0.f, 1.0f);
 }
 

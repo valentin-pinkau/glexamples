@@ -17,8 +17,6 @@ BasicLightingPipeline::BasicLightingPipeline()
 , sceneFilePath("data/massivelighting/testScene/testScene.fbx")
 
 {
-    //addParameter("strategies", &strategies);
-
     auto geometryStage = new GeometryStage();
     auto renderStage = new BasicLightingRenderStage();
     auto postprocessingStage = new BasicLightingPostprocessingStage();
