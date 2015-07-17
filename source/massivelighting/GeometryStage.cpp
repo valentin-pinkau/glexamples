@@ -32,7 +32,6 @@ GeometryStage::GeometryStage()
 void GeometryStage::initialize()
 {
     globjects::DebugMessage::enable();
-
 }
 void GeometryStage::process()
 {
