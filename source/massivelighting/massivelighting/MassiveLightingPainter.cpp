@@ -12,28 +12,24 @@ using gloperate::make_unique;
 
 MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & resourceManager, const std::string & relDataPath)
     : PipelinePainter("MassiveLighting", resourceManager, relDataPath, m_pipeline)
-    , m_targetFramebufferCapability{addCapability(new gloperate::TargetFramebufferCapability())}
-    , m_viewportCapability{addCapability(new gloperate::ViewportCapability())}
-    , m_projectionCapability{addCapability(new gloperate::PerspectiveProjectionCapability(m_viewportCapability))}
-    , m_cameraCapability{addCapability(new gloperate::CameraCapability(glm::vec3(-1.5, 2, 0), glm::vec3(5, 3, 0)))}
 {
-    m_pipeline.viewport.setData(m_viewportCapability);
-    m_pipeline.projection.setData(m_projectionCapability);
-    m_pipeline.camera.setData(m_cameraCapability);
-    m_pipeline.targetFBO.setData(m_targetFramebufferCapability);
+	auto targetFramebufferCapability = addCapability(new gloperate::TargetFramebufferCapability());
+	auto viewportCapability = addCapability(new gloperate::ViewportCapability());
+	auto projectionCapability = addCapability(new gloperate::PerspectiveProjectionCapability(viewportCapability));
+	auto cameraCapability = addCapability(new gloperate::CameraCapability(glm::vec3(-1.5, 2, 0), glm::vec3(5, 3, 0)));
+
+    m_pipeline.viewport.setData(viewportCapability);
+    m_pipeline.projection.setData(projectionCapability);
+    m_pipeline.camera.setData(cameraCapability);
+    m_pipeline.targetFBO.setData(targetFramebufferCapability);
 	m_pipeline.resourceManager.setData(&resourceManager);
 
-    m_viewportCapability->changed.connect([this]() { m_pipeline.viewport.invalidate(); });
-    m_projectionCapability->changed.connect([this]() { m_pipeline.projection.invalidate(); });
-    m_cameraCapability->changed.connect([this]() { m_pipeline.camera.invalidate(); });
-    m_targetFramebufferCapability->changed.connect([this]() { m_pipeline.targetFBO.invalidate(); });
+    viewportCapability->changed.connect([this]() { m_pipeline.viewport.invalidate(); });
+    projectionCapability->changed.connect([this]() { m_pipeline.projection.invalidate(); });
+    cameraCapability->changed.connect([this]() { m_pipeline.camera.invalidate(); });
+    targetFramebufferCapability->changed.connect([this]() { m_pipeline.targetFBO.invalidate(); });
 
     reflectionzeug::PropertyGroup * sceneGroup = addGroup("Scene");
 
     sceneGroup->addProperty(createProperty("SceneFilePath", m_pipeline.sceneFilePath));
 }
-
-
-
-
-

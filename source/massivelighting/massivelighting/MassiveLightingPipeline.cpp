@@ -10,16 +10,16 @@
 #include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 #include <gloperate/resources/ResourceManager.h>
+#include <globjects/base/File.h>
+#include <globjects/NamedString.h>
 
 using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline()
 : AbstractPipeline("MassiveLightingPipeline")
-, sceneFilePath("data/massivelighting/testScene/testScene.fbx")
+, sceneFilePath("data/massivelighting/models/testScene/testScene.fbx")
 
 {
-    //addParameter("strategies", &strategies);
-
     auto geometryStage = new GeometryStage();
     auto renderStage = new MassiveLightingRenderStage();
 	auto clusterStage = new MassiveLightingClusterStage();
@@ -49,12 +49,14 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 	postprocessingStage->lightIndicesTexture = clusterStage->lightIndicesTexture;
     postprocessingStage->targetFBO = targetFBO;
 
-
     addStages(
         geometryStage,
         renderStage,
 		clusterStage,
         postprocessingStage
     );
+
+	// Initialize shader includes
+	globjects::NamedString::create("data/massivelighting/shaders/common/phong.glsl", new globjects::File("data/massivelighting/shaders/common/phong.glsl"));
 }
 

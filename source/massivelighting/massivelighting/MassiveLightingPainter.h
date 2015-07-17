@@ -31,11 +31,4 @@ public:
 
 protected:
     MassiveLightingPipeline m_pipeline;
-
-    /* capabilities */
-    gloperate::AbstractTargetFramebufferCapability * m_targetFramebufferCapability;
-    gloperate::AbstractViewportCapability * m_viewportCapability;
-    gloperate::AbstractPerspectiveProjectionCapability * m_projectionCapability;
-    gloperate::AbstractCameraCapability * m_cameraCapability;
-
 };

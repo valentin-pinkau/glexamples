@@ -9,12 +9,14 @@
 #include <gloperate/painter/AbstractCameraCapability.h>
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 #include <gloperate/resources/ResourceManager.h>
+#include <globjects/base/File.h>
+#include <globjects/NamedString.h>
 
 using gloperate::make_unique;
 
 BasicLightingPipeline::BasicLightingPipeline()
 : AbstractPipeline("BasicLightingPipeline")
-, sceneFilePath("data/massivelighting/testScene/testScene.fbx")
+, sceneFilePath("data/massivelighting/models/testScene/testScene.fbx")
 
 {
     auto geometryStage = new GeometryStage();
@@ -42,5 +44,8 @@ BasicLightingPipeline::BasicLightingPipeline()
         renderStage,
         postprocessingStage
     );
+
+	// Initialize shader includes
+	globjects::NamedString::create("data/massivelighting/shaders/common/phong.glsl", new globjects::File("data/massivelighting/shaders/common/phong.glsl"));
 }
 

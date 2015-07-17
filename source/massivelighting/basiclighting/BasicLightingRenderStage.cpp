@@ -81,8 +81,8 @@ void BasicLightingRenderStage::loadShader()
 
     m_program = new Program{};
     m_program->attach(
-        Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/basiclighting/icosahedron.vert"),
-        Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/basiclighting/icosahedron.frag")
+		Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/shaders/basiclighting/icosahedron.vert", { "data/massivelighting/shaders/common" }),
+		Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/shaders/basiclighting/icosahedron.frag", { "data/massivelighting/shaders/common" })
     );
 }
 

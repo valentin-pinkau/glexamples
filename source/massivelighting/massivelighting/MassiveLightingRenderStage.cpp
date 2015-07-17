@@ -80,8 +80,8 @@ void MassiveLightingRenderStage::loadShader()
 
     m_program = new Program{};
     m_program->attach(
-        Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/massivelighting/icosahedron.vert"),
-        Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/icosahedron.frag")
+        Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/shaders/massivelighting/icosahedron.vert"),
+        Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/shaders/massivelighting/icosahedron.frag")
     );
 }
 

@@ -31,8 +31,8 @@ void BasicLightingPostprocessingStage::initialize()
     m_program = new globjects::Program{};
 
     m_program->attach(
-        globjects::Shader::fromFile(gl::GL_VERTEX_SHADER, "data/massivelighting/basiclighting/postprocessing.vert"),
-        globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/basiclighting/postprocessing.frag")
+		globjects::Shader::fromFile(gl::GL_VERTEX_SHADER, "data/massivelighting/shaders/basiclighting/postprocessing.vert", { "data/massivelighting/shaders/common" }),
+		globjects::Shader::fromFile(gl::GL_FRAGMENT_SHADER, "data/massivelighting/shaders/basiclighting/postprocessing.frag", { "data/massivelighting/shaders/common" })
     );
 
     m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));

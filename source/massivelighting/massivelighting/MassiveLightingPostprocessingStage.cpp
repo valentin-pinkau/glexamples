@@ -37,8 +37,8 @@ void MassiveLightingPostprocessingStage::initialize()
     m_program = new globjects::Program{};
 
     m_program->attach(
-        globjects::Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/massivelighting/postprocessing.vert"),
-        globjects::Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/massivelighting/postprocessing.frag")
+		globjects::Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/shaders/massivelighting/postprocessing.vert", { "data/massivelighting/shaders/common" }),
+		globjects::Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/shaders/massivelighting/postprocessing.frag", { "data/massivelighting/shaders/common" })
     );
 
 	m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transformInverted", glm::mat4()));
