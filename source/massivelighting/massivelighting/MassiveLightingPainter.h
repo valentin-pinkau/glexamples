@@ -26,7 +26,7 @@ namespace gloperate
 class MassiveLightingPainter : public gloperate::PipelinePainter
 {
 public:
-    MassiveLightingPainter(gloperate::ResourceManager & resourceManager);
+	MassiveLightingPainter(gloperate::ResourceManager & resourceManager, const std::string & relDataPath);
     virtual ~MassiveLightingPainter() = default;
 
 protected:

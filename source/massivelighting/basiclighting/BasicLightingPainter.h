@@ -26,7 +26,7 @@ namespace gloperate
 class BasicLightingPainter : public gloperate::PipelinePainter
 {
 public:
-    BasicLightingPainter(gloperate::ResourceManager & resourceManager);
+	BasicLightingPainter(gloperate::ResourceManager & resourceManager, const std::string & relDataPath);
     virtual ~BasicLightingPainter() = default;
 
 protected:

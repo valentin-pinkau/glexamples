@@ -10,8 +10,8 @@
 
 using gloperate::make_unique;
 
-MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & resourceManager)
-    : PipelinePainter(resourceManager, m_pipeline)
+MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & resourceManager, const std::string & relDataPath)
+    : PipelinePainter("MassiveLighting", resourceManager, relDataPath, m_pipeline)
     , m_targetFramebufferCapability{addCapability(new gloperate::TargetFramebufferCapability())}
     , m_viewportCapability{addCapability(new gloperate::ViewportCapability())}
     , m_projectionCapability{addCapability(new gloperate::PerspectiveProjectionCapability(m_viewportCapability))}

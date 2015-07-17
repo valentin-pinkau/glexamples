@@ -8,13 +8,13 @@
 
 GLOPERATE_PLUGIN_LIBRARY
 
-    GLOPERATE_PLUGIN(MassiveLightingPainter
+	GLOPERATE_PAINTER_PLUGIN(MassiveLightingPainter
     , "MassiveLighting"
     , "Deferred lighting with many lights"
     , GLEXAMPLES_AUTHOR_ORGANIZATION
     , "v0.0.1" )
 
-	GLOPERATE_PLUGIN(BasicLightingPainter
+	GLOPERATE_PAINTER_PLUGIN(BasicLightingPainter
 	, "BasicLighting"
 	, "Basic lighting with few lights"
 	, GLEXAMPLES_AUTHOR_ORGANIZATION
