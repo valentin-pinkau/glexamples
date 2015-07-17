@@ -3,7 +3,7 @@
 #include <gloperate/pipeline/AbstractPipeline.h>
 #include <gloperate/pipeline/Data.h>
 
-#include <reflectionzeug/FilePath.h>
+#include <reflectionzeug/base/FilePath.h>
 
 namespace gloperate
 {

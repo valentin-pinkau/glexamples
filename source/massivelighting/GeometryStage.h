@@ -12,7 +12,7 @@
 #include <gloperate/primitives/PolygonalDrawable.h>
 #include <gloperate/primitives/Light.h>
 
-#include <reflectionzeug/FilePath.h>
+#include <reflectionzeug/base/FilePath.h>
 
 #include "GPULights.h"
 
