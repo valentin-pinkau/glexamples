@@ -1,7 +1,6 @@
 #include "GeometryStage.h"
 #include "BasicLightingPipeline.h"
 #include "BasicLightingRenderStage.h"
-#include "BasicLightingPostprocessingStage.h"
 
 #include <gloperate/base/make_unique.hpp>
 #include <gloperate/painter/AbstractViewportCapability.h>
@@ -21,7 +20,6 @@ BasicLightingPipeline::BasicLightingPipeline()
 {
     auto geometryStage = new GeometryStage();
     auto renderStage = new BasicLightingRenderStage();
-    auto postprocessingStage = new BasicLightingPostprocessingStage();
 
     geometryStage->sceneFilePath = sceneFilePath;
 	geometryStage->resourceManager = resourceManager;
@@ -32,17 +30,11 @@ BasicLightingPipeline::BasicLightingPipeline()
     renderStage->viewport = viewport;
     renderStage->camera = camera;
     renderStage->projection = projection;
-
-    postprocessingStage->viewport = viewport;
-    postprocessingStage->colorTexture = renderStage->colorTexture;
-    postprocessingStage->depthTexture = renderStage->depthBufferTexture;
-    postprocessingStage->targetFBO = targetFBO;
-
+	renderStage->targetFBO = targetFBO;
 
     addStages(
         geometryStage,
-        renderStage,
-        postprocessingStage
+        renderStage
     );
 
 	// Initialize shader includes

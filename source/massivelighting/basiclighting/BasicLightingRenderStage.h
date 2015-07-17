@@ -29,6 +29,7 @@ namespace gloperate
     class AbstractProjectionCapability;
     class AbstractCameraCapability;
     class AbstractTypedRenderTargetCapability;
+	class AbstractTargetFramebufferCapability;
     class Light;
 	class PolygonalDrawable;
 }
@@ -49,29 +50,24 @@ public:
     gloperate::InputSlot<gloperate::AbstractViewportCapability *> viewport;
     gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
     gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
-
-    gloperate::Data<globjects::ref_ptr<globjects::Texture>> colorTexture;
-    gloperate::Data<globjects::ref_ptr<globjects::Texture>> idTexture;
-    gloperate::Data<globjects::ref_ptr<globjects::Texture>> normalTexture;
-    gloperate::Data<globjects::ref_ptr<globjects::Texture>> geometryTexture;
-    gloperate::Data<globjects::ref_ptr<globjects::Texture>> depthBufferTexture;
+	gloperate::InputSlot<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
 
 protected:
     virtual void process() override;
     void setupGLState();
     void loadShader();
-    void setupFbo();
+	void setupFbo();
     void setupUniforms();
-    void resizeFbos(int width, int height);
+	void resizeFbo(int width, int height);
     void render();
-
 
 protected:
     globjects::ref_ptr<gloperate::AdaptiveGrid> m_grid;
     globjects::ref_ptr<globjects::Program> m_program;
     gloperate::UniformGroup m_uniforms;
-    globjects::ref_ptr<globjects::Framebuffer> m_fbo;
-	globjects::ref_ptr<globjects::Buffer> m_lights;
+	globjects::ref_ptr<globjects::Framebuffer> m_fbo;
+	globjects::ref_ptr<globjects::Texture> m_colorTexture;
+	globjects::ref_ptr<globjects::Texture> m_depthTexture;
 };
 
 
