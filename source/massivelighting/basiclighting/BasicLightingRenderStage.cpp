@@ -173,7 +173,6 @@ void BasicLightingRenderStage::process()
 	m_fbo->unbind();
 }
 
-
 void BasicLightingRenderStage::render()
 {
     glViewport(
