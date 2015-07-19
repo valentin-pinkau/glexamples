@@ -17,11 +17,7 @@
 using namespace gl;
 
 MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
-: AbstractStage("Postprocessing")
-
-{
-    alwaysProcess(true);
-
+	: AbstractStage("Postprocessing") {
     addInput("viewport", viewport);
     addInput("lights Buffer", lightsBuffer);
 	addInput("colorTexture", colorTexture);
@@ -30,6 +26,8 @@ MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
 	addInput("clusterTexture", clusterTexture);
 	addInput("lightIndicesTexture", lightIndicesTexture);
     addOptionalInput("targetFBO", targetFBO);
+	
+	alwaysProcess(true);
 }
 
 void MassiveLightingPostprocessingStage::initialize()

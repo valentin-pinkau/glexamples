@@ -32,15 +32,14 @@ using namespace globjects;
 
 
 BasicLightingRenderStage::BasicLightingRenderStage()
-:   AbstractStage("BasicLightingRenderStage")
-{
+	: AbstractStage("BasicLightingRenderStage") {
     addInput("drawables", drawables);
 	addInput("materials", materials);
     addInput("lights Buffer", lightsBuffer);
     addInput("viewport", viewport);
     addInput("camera", camera);
     addInput("projection", projection);
-	addInput("targetFBO", targetFBO);
+	addOptionalInput("targetFBO", targetFBO);
 
 	alwaysProcess(true);
 }
@@ -128,7 +127,7 @@ void BasicLightingRenderStage::process()
         rerender = true;
     }
 
-    if (lightsBuffer.hasChanged())
+    if (lightsBuffer.hasChanged() && lightsBuffer.data())
     {
         auto uniformBlock = m_program->uniformBlock("Lights");
         lightsBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 0);
@@ -165,7 +164,7 @@ void BasicLightingRenderStage::process()
 	std::array<int, 4> sourceRect = { { 0, 0, viewport.data()->width(), viewport.data()->height() } };
 	std::array<int, 4> destRect = { { 0, 0, viewport.data()->width(), viewport.data()->height() } };
 
-	globjects::Framebuffer * destFbo = targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
+	auto destFbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
 
 	m_fbo->blit(gl::GL_COLOR_ATTACHMENT0, sourceRect, destFbo, gl::GL_BACK_LEFT, destRect, gl::GL_COLOR_BUFFER_BIT, gl::GL_NEAREST);
 	m_fbo->blit(gl::GL_DEPTH_ATTACHMENT, sourceRect, destFbo, gl::GL_BACK_LEFT, destRect, gl::GL_DEPTH_BUFFER_BIT, gl::GL_NEAREST);

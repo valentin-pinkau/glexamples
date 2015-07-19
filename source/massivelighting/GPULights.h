@@ -3,9 +3,9 @@
 #include <glm/vec4.hpp>
 
 /*mappings for light types
-    fields		|		uni (type==0)					|		spot (type==2)								|		area  (type==4)		|
+    fields		|		uni (type==2)					|		spot (type==3)								|		area  (type==5)		|
 
-position		vec4(position.xyz,0)					vec4(position.xyz,2)								vec4(center.xyz,4)
+position		vec4(position.xyz,2)					vec4(position.xyz,3)								vec4(center.xyz,5)
 color			vec4(color.rgb,1)						vec4(color.rgb,1)									vec4(color.rgb,1)
 attenuation		vec4(constAtt,linearAtt,quadricAtt,0)	vec4(constAtt,linearAtt,quadricAtt,spotExponent)	vec4(constAtt,linearAtt,quadricAtt,width)
 multiuse		not used								vec4(spotDirection.xyz,spotCosCutOf)				vec4(planeNormal.xyz,height)

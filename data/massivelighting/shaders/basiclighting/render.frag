@@ -32,10 +32,7 @@ vec3 base_color()
 
 void main()
 {
-	float light_factor = material_ambient_factor;
-
-	vec3 normal = normalize(v_normal);
-	vec3 view_direction = normalize(eye - v_vertex);
+	vec3 normal = v_normal;
 
 	vec3 ambient = ambient_color.rgb;
 	vec3 diffuse = vec3(0);
