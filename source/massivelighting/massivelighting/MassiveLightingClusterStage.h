@@ -34,11 +34,17 @@ public:
 	gloperate::Data<globjects::ref_ptr<globjects::Texture>> lightIndicesTexture;
 
 protected:
-    virtual void process() override;
-    void createCluster();
+	void updateLightRadiuses();
+	virtual void process() override;
+	float z_planes(unsigned i);
+	float y_planes(unsigned i);
+	float x_planes(unsigned i);
+	void createCluster();
+
+	std::vector<float> m_lightRadiuses;
 
 	int m_lightCounts[xResolution][yResolution][zResolution];
-    std::array<glm::int16, 16> m_cluster[xResolution][yResolution][zResolution];
+    std::array<glm::int16, 128> m_cluster[xResolution][yResolution][zResolution];
     glm::ivec2 m_lookUp[xResolution * yResolution * zResolution];
-	std::vector<glm::int16> m_indices;
+	std::vector<glm::uint16> m_indices;
 };

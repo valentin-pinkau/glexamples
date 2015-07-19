@@ -47,16 +47,20 @@ void main()
   	vec3 diffuse = vec3(0);
   	vec3 specular = vec3(0);
 
+		vec3 tcolor;
+
 		ivec2 lookup = texture(clusterTexture, vec3(v_uv, depth)).xy;
   	for (int li = 0; li < lookup.y; ++li)
     {
 			int i = texelFetch(lightIndicesTexture, lookup.x + li, 0).x;
 
 			LightingInfo lighting = computeLighting(eye, worldCoordinates.xyz, normal, lights[i]);
-
+			tcolor = lights[i].color.rgb;
       diffuse += lighting.diffuse;
+
       specular += lighting.specular;
     }
+		if (lookup.y == 2) tcolor = vec3(1);
 
   	vec3 combined_lighting = material_ambient_factor * ambient
                              + material_diffuse_factor * diffuse
@@ -64,6 +68,10 @@ void main()
 
   	vec3 lighted_color = base_color() * min(combined_lighting, 1);
 
-    fragColor = vec4(lighted_color, 1);
+		if (v_screenCoordinates.x < 0)
+    	fragColor = vec4(lighted_color, 1);
+		else
+			fragColor = vec4(vec3(lookup.y) / 32.f, 1);
+			//fragColor = vec4(tcolor, 1);
     gl_FragDepth = depth;
 }

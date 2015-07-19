@@ -16,7 +16,7 @@ MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & reso
 	auto targetFramebufferCapability = addCapability(new gloperate::TargetFramebufferCapability());
 	auto viewportCapability = addCapability(new gloperate::ViewportCapability());
 	auto projectionCapability = addCapability(new gloperate::PerspectiveProjectionCapability(viewportCapability));
-	auto cameraCapability = addCapability(new gloperate::CameraCapability(glm::vec3(-1.5, 2, 0), glm::vec3(5, 3, 0)));
+	auto cameraCapability = addCapability(new gloperate::CameraCapability(glm::vec3(0, 2, -1.5), glm::vec3(0, 0, 0)));
 
     m_pipeline.viewport.setData(viewportCapability);
     m_pipeline.projection.setData(projectionCapability);

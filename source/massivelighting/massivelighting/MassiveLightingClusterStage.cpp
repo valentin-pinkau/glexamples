@@ -7,6 +7,7 @@
 #include <glbinding/gl/functions.h>
 
 #include <globjects/Texture.h>
+#include <globjects/Logging.h>
 
 using namespace gl;
 
@@ -42,6 +43,26 @@ void MassiveLightingClusterStage::initialize()
 }
 
 
+void MassiveLightingClusterStage::updateLightRadiuses()
+{
+	m_lightRadiuses.clear();
+	m_lightRadiuses.reserve(gpuLights.data().number_of_lights);
+	for (auto & gpuLight : gpuLights.data().lights)
+	{
+		// Calculate distance where attenuation(d) = epsilon
+		static const float attenuation_epsilon = 0.005f;
+		// http://gamedev.stackexchange.com/questions/56897/glsl-light-attenuation-color-and-intensity-formula
+
+		// Point light
+		float linearAttenuation = gpuLight.attenuation.y;
+		float quadricAttenuation = gpuLight.attenuation.z;
+		
+		float distLinear = linearAttenuation > 0.f ? 1.f / linearAttenuation : std::numeric_limits<float>::infinity();
+		float distQudratic = quadricAttenuation > 0.f ? sqrt(1.f / (quadricAttenuation * attenuation_epsilon)) : std::numeric_limits<float>::infinity();
+		m_lightRadiuses.push_back(std::min(distLinear, distQudratic));
+	}
+}
+
 void MassiveLightingClusterStage::process()
 {
     bool recluster = false;
@@ -51,13 +72,45 @@ void MassiveLightingClusterStage::process()
         recluster = true;
     }
 
+	if (gpuLights.hasChanged())
+	{
+		updateLightRadiuses();
+	}
+
     if (recluster)
     {
         createCluster();
 
 		clusterTexture.data()->image3D(0, GL_RG32I, xResolution, yResolution, zResolution, 0, GL_RG_INTEGER, GL_INT, m_lookUp);
-        lightIndicesTexture.data()->image1D(0, GL_R16I, m_indices.size(), 0, GL_RED_INTEGER, GL_INT, m_indices.data());
+		lightIndicesTexture.data()->image1D(0, GL_R16UI, m_indices.size(), 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, m_indices.data());
     }	
+}
+
+float MassiveLightingClusterStage::z_planes(unsigned i)
+{
+	//static const std::array<float, zResolution + 1> z_planes = { { 0.1, 0.17, 0.29, 0.49, 0.84, 1.43, 2.44, 4.15, 7.07, 12.0, 20.5, 34.9, 59, 101, 172, 293, 2000 } };
+	//return ((z_planes[i] - z_planes[0]) / z_planes[zResolution]) * 2.f - 1.f;
+	
+	if (i >= zResolution)
+		return 1.f;
+
+	return (float(i) / float(zResolution)) * 2.f - 1.f;
+}
+
+float MassiveLightingClusterStage::y_planes(unsigned i)
+{
+	if (i >= yResolution)
+		return 1.f;
+
+	return (float(i) / float(yResolution)) * 2.f - 1.f;
+}
+
+float MassiveLightingClusterStage::x_planes(unsigned i)
+{
+	if (i >= xResolution)
+		return 1.f;
+
+	return (float(i) / float(xResolution)) * 2.f - 1.f;
 }
 
 void MassiveLightingClusterStage::createCluster()
@@ -75,60 +128,84 @@ void MassiveLightingClusterStage::createCluster()
 	}
 	m_indices.clear();
 
-    static const float attenuation_epsilon = 0.01f;
 	auto viewProjection = projection.data()->projection() * camera.data()->view();
-    for (unsigned i = 0; i < gpuLights.data().number_of_lights; ++i)
-    {
-        GPULight light = gpuLights.data().lights[i];
-        
+
+	for (unsigned i = 0; i < gpuLights.data().number_of_lights; ++i)
+	{
+		//if (i > 0) continue;
+		GPULight light = gpuLights.data().lights[i];
+
 		// Determine position of light in screenspace
 		glm::vec4 lightPositionWorld = light.position;
-        lightPositionWorld.w = 1.0f;
-        glm::vec4 lightPositionScreen =  viewProjection * lightPositionWorld;
-        lightPositionScreen /= lightPositionScreen.w;
+		lightPositionWorld.w = 1.0f;
+		glm::vec4 lightPositionScreen = viewProjection * lightPositionWorld;
+		lightPositionScreen /= lightPositionScreen.w;
 
-		// Calculate distance where attenuation(d) = epsilon
-		float linearAttenuation = 1; // light.attenuation.y;
-		float quadricAttenuation = 0.1f; // light.attenuation.z;
-		if (quadricAttenuation < 0.001f) quadricAttenuation += 0.1;
-        float pHalf = (linearAttenuation / (quadricAttenuation * 2.0f));
-        float influenceRadius = abs(- pHalf + sqrt(pHalf * pHalf - (1.0 / attenuation_epsilon * quadricAttenuation)));
-
-		glm::vec4 influenceRadiusWorld = glm::vec4(lightPositionWorld.x + influenceRadius, lightPositionWorld.y, lightPositionWorld.z, 1.f);
-		glm::vec4 projectedInfluenceRadius = viewProjection * influenceRadiusWorld;
-		float dist = glm::length(lightPositionScreen - projectedInfluenceRadius);
-
-		// Create AABB of light using the calculated distance
-		glm::vec4 llf = glm::vec4(lightPositionScreen.x - dist, 
-									   lightPositionScreen.y - dist, 
-									   lightPositionScreen.z - dist, 1.0f);
-		glm::vec4 urb = glm::vec4(lightPositionScreen.x + dist, 
-								       lightPositionScreen.y + dist, 
-								       lightPositionScreen.z + dist, 1.0f);
-
-		// Determine cluster coordinates of lower left front / upper right back
-		// vertices of AABB
-        glm::ivec3 llfClusterIdx(floor(llf.x * xResolution), floor(llf.y * yResolution), floor(llf.z * zResolution));
-        glm::ivec3 urbClusterIdx(floor(urb.x * xResolution), floor(urb.y * yResolution), floor(urb.z * zResolution));
+		float influenceRadius = m_lightRadiuses[i];
 		
-		// Assign light to clusters
-        for (int z = llfClusterIdx.z; z <= urbClusterIdx.z; ++z)
-        {
-            for (int y = llfClusterIdx.y; y <= urbClusterIdx.y; ++y)
-            {
-                for (int x = llfClusterIdx.x; x <= urbClusterIdx.x; ++x)
-                {
-					// If current cluster is not visible, skip it
-					if (x < 0 || y < 0 || z < 0 ||
-						x >= xResolution || y >= yResolution || z >= zResolution)
-						continue;
+		glm::vec4 influenceRadiusWorld = glm::vec4(lightPositionWorld.x, lightPositionWorld.y + influenceRadius, lightPositionWorld.z, 1.f);
+		glm::vec4 projectedInfluenceRadius = viewProjection * influenceRadiusWorld;
+		projectedInfluenceRadius /= projectedInfluenceRadius.w;
+		float theRealInfluenceRadius = glm::length(lightPositionScreen - projectedInfluenceRadius);
+		//theRealInfluenceRadius = 0.3f;
+		//lightPositionScreen = glm::vec4(0);
+		//globjects::info() << theRealInfluenceRadius;
+		//globjects::info() << lightPositionScreen;
 
-					auto n = m_lightCounts[x][y][z]++;
-					m_cluster[x][y][z][n] = i;
-                }
-            }
-        }
-    }
+		for (int z = 0; z < zResolution; ++z)
+		{
+			glm::vec3 z_light(lightPositionScreen);
+			
+			
+			if (z_light.z < z_planes(z) || z_light.z > z_planes(z+1))
+			{
+				float z_plane = (z_light.z < z_planes(z)) ? z_planes(z) : z_planes(z + 1);
+				z_light.z = z_plane;
+			}
+
+			for (int y = 0; y < yResolution; ++y)
+			{
+				glm::vec3 y_light = z_light;
+				if (y_light.y < y_planes(y) || y_light.y > y_planes(y+1))
+				{
+					float y_plane = (y_light.y < y_planes(y)) ? y_planes(y) : y_planes(y + 1);
+					y_light.y = y_plane;
+				}
+
+				float t_radius = glm::length((y_light - glm::vec3(lightPositionScreen)));
+				if (t_radius > theRealInfluenceRadius)
+					continue;
+
+				float yz_light_radius = sqrt(pow(theRealInfluenceRadius, 2) - pow(t_radius, 2));
+
+				int xLower = 0;
+				do
+				{
+					++xLower;
+				} while (xLower < xResolution && (y_light.x - x_planes(xLower)) >= yz_light_radius);
+
+				int xUpper = xResolution;
+				do
+				{
+					--xUpper;
+				} while (xUpper >= xLower && -(y_light.x - x_planes(xUpper)) >= yz_light_radius);
+
+				for (--xLower; xLower <= xUpper; ++xLower)
+				{
+					auto & n = m_lightCounts[xLower][y][z];
+					if (n < m_cluster[xLower][y][z].size())
+					{
+						m_cluster[xLower][y][z][n++] = i;
+					}
+					else
+					{
+						//globjects::info() << "ich bin light #" << i;
+						//n = 5;
+					}
+				}
+			}
+		}
+	}
 
 	// Create index list and 3d texture data of clusters
     int currentOffset = 0;

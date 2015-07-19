@@ -53,7 +53,7 @@ void MassiveLightingRenderStage::initialize()
     setupFbo();
     setupUniforms();
 
-    static const auto zNear = 0.3f, zFar = 30.f;
+    static const auto zNear = 0.1f, zFar = 100.f;
 
     projection.data()->setZNear(zNear);
     projection.data()->setZFar(zFar);
