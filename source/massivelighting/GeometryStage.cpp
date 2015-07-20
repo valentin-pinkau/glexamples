@@ -20,7 +20,7 @@ using namespace gl;
 using gloperate::make_unique;
 
 GeometryStage::GeometryStage()
-:   AbstractStage("GeometryStage")
+	: AbstractStage("GeometryStage")
 {
     addInput("sceneFilePath", sceneFilePath);
 
@@ -109,7 +109,7 @@ void GeometryStage::reloadScene()
         auto & inLight = scene->lights()[i];
         gpuLight.position = glm::vec4(inLight->position(), inLight->type());
         gpuLight.color = glm::vec4(inLight->colorDiffuse(), 1.f);
-        gpuLight.attenuation = glm::vec4(inLight->attenuationConst(), inLight->attenuationLinear(), inLight->attenuationQuad(), 0.9f); //spotlight exponent is not imported
+        gpuLight.attenuation = glm::vec4(inLight->attenuationConstant(), inLight->attenuationLinear(), inLight->attenuationQuadratic(), 0.9f); //spotlight exponent is not imported
 		newGpuLights.lights[i] = gpuLight;
     }
 
