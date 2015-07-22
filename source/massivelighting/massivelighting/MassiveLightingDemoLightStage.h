@@ -33,7 +33,8 @@ public:
 
 	gloperate::InputSlot<gloperate::AbstractVirtualTimeCapability *> time;
 	gloperate::InputSlot<unsigned> activeLights;
-	gloperate::Data<GPULights> gpuLights;	
+	gloperate::InputSlot<bool> animateLights;
+	gloperate::Data<GPULights> gpuLights;
 
 protected:
 	glm::vec3 hueToRgb(float hue);

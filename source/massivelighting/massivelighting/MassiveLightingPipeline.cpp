@@ -22,8 +22,9 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 	, enableDebugView(false)
 	, enableDemoLights(true)
 	, demoLightsCount(64)
-	, clustersX(64)
-	, clustersY(32)
+	, animateLights(true)
+	, clustersX(30)
+	, clustersY(17)
 	, clustersZ(16)
 	, attenuationThreshold(0.1f)
 {
@@ -35,6 +36,7 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 
 	demoLightStage->activeLights = demoLightsCount;
 	demoLightStage->time = time;
+	demoLightStage->animateLights = animateLights;
 
 	geometryStage->useLightInput = enableDemoLights;
 	geometryStage->lightsInput = demoLightStage->gpuLights;

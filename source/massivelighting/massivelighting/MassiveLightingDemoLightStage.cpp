@@ -20,6 +20,7 @@ MassiveLightingDemoLightStage::MassiveLightingDemoLightStage()
 {
 	addInput("time", time);
 	addInput("activeLights", activeLights);
+	addInput("animateLights", animateLights);
 }
 
 void MassiveLightingDemoLightStage::initialize()
@@ -61,7 +62,10 @@ void MassiveLightingDemoLightStage::initialize()
 
 void MassiveLightingDemoLightStage::process()
 {
-	if (time.hasChanged() || activeLights.hasChanged())
+	if (activeLights.hasChanged())
+		gpuLights.data().number_of_lights = activeLights.data();
+
+	if ((animateLights.hasChanged() || time.hasChanged() || activeLights.hasChanged()) && animateLights.data())
 	{
 		gpuLights.data().number_of_lights = activeLights.data();
 

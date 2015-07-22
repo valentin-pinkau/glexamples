@@ -38,6 +38,7 @@ public:
 	gloperate::Data<bool> enableDebugView;
 	gloperate::Data<bool> enableDemoLights;
 	gloperate::Data<unsigned> demoLightsCount;
+	gloperate::Data<bool> animateLights;
 	gloperate::Data<unsigned> clustersX;
 	gloperate::Data<unsigned> clustersY;
 	gloperate::Data<unsigned> clustersZ;

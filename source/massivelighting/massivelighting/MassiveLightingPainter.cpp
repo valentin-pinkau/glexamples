@@ -41,6 +41,7 @@ MassiveLightingPainter::MassiveLightingPainter(gloperate::ResourceManager & reso
 	reflectionzeug::PropertyGroup * demoLightsGroup = addGroup("Demo Lights");
 	demoLightsGroup->addProperty(createProperty("EnableDemoLights", m_pipeline.enableDemoLights));
 	demoLightsGroup->addProperty(createProperty("DemoLightsCount", m_pipeline.demoLightsCount));
+	demoLightsGroup->addProperty(createProperty("AnimateLights", m_pipeline.animateLights));
 
 	reflectionzeug::PropertyGroup * clusteredShadingGroup = addGroup("Clustered Shading");
 	clusteredShadingGroup->addProperty(createProperty("Clusters X", m_pipeline.clustersX));
