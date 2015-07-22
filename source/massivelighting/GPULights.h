@@ -12,19 +12,19 @@ multiuse		not used								vec4(spotDirection.xyz,spotCosCutOf)				vec4(planeNorm
 
 */
 
-#define MAX_LIGHTS 256
+#define MAX_LIGHTS 1024
 
-typedef struct
+struct GPULight
 {
     glm::vec4 position;
     glm::vec4 color;
     glm::vec4 attenuation;
     glm::vec4 multiuse;
-} GPULight;
+};
 
-typedef struct
+struct GPULights
 {
     glm::vec4 ambient_color;
     GPULight lights[MAX_LIGHTS];
     glm::uint number_of_lights;
-} GPULights;
+};

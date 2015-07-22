@@ -23,6 +23,8 @@ GeometryStage::GeometryStage()
 	: AbstractStage("GeometryStage")
 {
     addInput("sceneFilePath", sceneFilePath);
+	addInput("useLightInput", useLightInput);
+	addOptionalInput("lightsInput", lightsInput);
 
     addOutput("drawables", drawables);
 	addOutput("materials", materials);
@@ -32,6 +34,8 @@ GeometryStage::GeometryStage()
 void GeometryStage::initialize()
 {
     globjects::DebugMessage::enable();
+
+	lightsBuffer = globjects::make_ref<globjects::Buffer>();
 }
 void GeometryStage::process()
 {
@@ -47,6 +51,20 @@ void GeometryStage::process()
         reloadScene();
         invalidateOutputs();
     }
+
+	if (reload || useLightInput.hasChanged() || lightsInput.hasChanged())
+	{
+		if (useLightInput.data() && !lightsInput.isConnected())
+			return;
+
+		auto & lights = useLightInput.data() ? lightsInput.data() : m_sceneLights;
+
+		lightsBuffer.data()->bind(GL_UNIFORM_BUFFER);
+		lightsBuffer.data()->setData(sizeof(GPULights), &lights, GL_DYNAMIC_DRAW);
+		lightsBuffer.data()->unbind(GL_UNIFORM_BUFFER);
+
+		gpuLights.setData(lights);
+	}
 }
 
 void GeometryStage::reloadScene()
@@ -91,7 +109,6 @@ void GeometryStage::reloadScene()
 
 	drawables->clear();
 	materials->clear();
-    lightsBuffer = globjects::make_ref<globjects::Buffer>();
 
 	for (const auto & geometry : scene->meshes())
 	{
@@ -117,7 +134,7 @@ void GeometryStage::reloadScene()
 	lightsBuffer.data()->setData(sizeof(newGpuLights), &newGpuLights, GL_DYNAMIC_DRAW);
     lightsBuffer.data()->unbind(GL_UNIFORM_BUFFER);
 
-	gpuLights.setData(newGpuLights);
+	m_sceneLights = newGpuLights;
 
 	delete scene;
 }

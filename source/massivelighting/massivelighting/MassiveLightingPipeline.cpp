@@ -12,19 +12,32 @@
 #include <gloperate/resources/ResourceManager.h>
 #include <globjects/base/File.h>
 #include <globjects/NamedString.h>
+#include "MassiveLightingDemoLightStage.h"
 
 using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline()
-: AbstractPipeline("MassiveLightingPipeline")
-, sceneFilePath("data/massivelighting/models/testScene/testScene.fbx")
-
+	: AbstractPipeline("MassiveLightingPipeline")
+	, sceneFilePath("data/massivelighting/models/crytek-sponza/sponza.fbx")
+	, enableDebugView(false)
+	, enableDemoLights(true)
+	, demoLightsCount(64)
+	, clustersX(64)
+	, clustersY(32)
+	, clustersZ(16)
+	, attenuationThreshold(0.1f)
 {
+	auto demoLightStage = new MassiveLightingDemoLightStage();
     auto geometryStage = new GeometryStage();
     auto renderStage = new MassiveLightingRenderStage();
 	auto clusterStage = new MassiveLightingClusterStage();
     auto postprocessingStage = new MassiveLightingPostprocessingStage();
 
+	demoLightStage->activeLights = demoLightsCount;
+	demoLightStage->time = time;
+
+	geometryStage->useLightInput = enableDemoLights;
+	geometryStage->lightsInput = demoLightStage->gpuLights;
     geometryStage->sceneFilePath = sceneFilePath;
 	geometryStage->resourceManager = resourceManager;
 
@@ -37,6 +50,10 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 	clusterStage->camera = camera;
 	clusterStage->projection = projection;
 	clusterStage->gpuLights = geometryStage->gpuLights;
+	clusterStage->xResolution = clustersX;
+	clusterStage->yResolution = clustersY;
+	clusterStage->zResolution = clustersZ;
+	clusterStage->attenuationThreshold = attenuationThreshold;
 
     postprocessingStage->viewport = viewport;
     postprocessingStage->lightsBuffer = geometryStage->lightsBuffer;
@@ -48,8 +65,10 @@ MassiveLightingPipeline::MassiveLightingPipeline()
 	postprocessingStage->clusterTexture = clusterStage->clusterTexture;
 	postprocessingStage->lightIndicesTexture = clusterStage->lightIndicesTexture;
     postprocessingStage->targetFBO = targetFBO;
+	postprocessingStage->enableDebugOutput = enableDebugView;
 
-    addStages(
+	addStages(
+		demoLightStage,
         geometryStage,
         renderStage,
 		clusterStage,

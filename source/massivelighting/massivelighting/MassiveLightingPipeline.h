@@ -30,7 +30,16 @@ public:
     gloperate::Data<gloperate::AbstractPerspectiveProjectionCapability *> projection;
     gloperate::Data<gloperate::AbstractCameraCapability *> camera;
     gloperate::Data<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
+	gloperate::Data<gloperate::AbstractVirtualTimeCapability *> time;
 	gloperate::Data<gloperate::ResourceManager *> resourceManager;
+	
 
     gloperate::Data<reflectionzeug::FilePath> sceneFilePath;
+	gloperate::Data<bool> enableDebugView;
+	gloperate::Data<bool> enableDemoLights;
+	gloperate::Data<unsigned> demoLightsCount;
+	gloperate::Data<unsigned> clustersX;
+	gloperate::Data<unsigned> clustersY;
+	gloperate::Data<unsigned> clustersZ;
+	gloperate::Data<float> attenuationThreshold;
 };

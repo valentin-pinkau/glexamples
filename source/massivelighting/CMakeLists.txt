@@ -45,6 +45,7 @@ set(sources
     ${source_path}/massivelighting/MassiveLightingRenderStage.cpp
     ${source_path}/massivelighting/MassiveLightingClusterStage.cpp
     ${source_path}/massivelighting/MassiveLightingPostprocessingStage.cpp
+	${source_path}/massivelighting/MassiveLightingDemoLightStage.cpp
     ${source_path}/plugin.cpp
 )
 
@@ -59,6 +60,7 @@ set(api_includes
     ${include_path}/massivelighting/MassiveLightingRenderStage.h
     ${include_path}/massivelighting/MassiveLightingClusterStage.h
     ${include_path}/massivelighting/MassiveLightingPostprocessingStage.h
+	${include_path}/massivelighting/MassiveLightingDemoLightStage.h
 )
 
 # Group source files

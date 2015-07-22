@@ -27,7 +27,7 @@ struct Plane
 
 class MassiveLightingClusterStage : public gloperate::AbstractStage
 {
-    static const int xResolution = 64, yResolution = 64,  zResolution = 16;
+    //static const int xResolution = 64, yResolution = 32,  zResolution = 16;
 public:
     MassiveLightingClusterStage();
     virtual ~MassiveLightingClusterStage() = default;
@@ -36,27 +36,33 @@ public:
 	gloperate::InputSlot<GPULights> gpuLights;
 	gloperate::InputSlot<gloperate::AbstractCameraCapability *> camera;
 	gloperate::InputSlot<gloperate::AbstractProjectionCapability *> projection;
+	gloperate::InputSlot<unsigned> xResolution;
+	gloperate::InputSlot<unsigned> yResolution;
+	gloperate::InputSlot<unsigned> zResolution;
+	gloperate::InputSlot<float> attenuationThreshold;
 	
 	gloperate::Data<globjects::ref_ptr<globjects::Texture>> clusterTexture;
 	gloperate::Data<globjects::ref_ptr<globjects::Texture>> lightIndicesTexture;
 
 protected:
-	void updateLightRadiuses();
+	void updateLightRadiuses(const GPULights & lights);
 	void updatePlanes();
 	virtual void process() override;
 	
-	void createClusters();
+	void createClusters(const GPULights & lights);
 	glm::vec3 projectToZPlane(const glm::vec3 & point, const Plane & plane);
 	glm::vec3 projectToYPlane(const glm::vec3 & point, const Plane & plane);
 	float getDistance(const glm::vec3 & point, const Plane & plane);
-	std::vector<float> m_lightRadiuses;
+	std::array<float, MAX_LIGHTS> m_lightRadiuses;
 
-	std::array<Plane, xResolution + 1> x_planes;
-	std::array<Plane, yResolution + 1> y_planes;
-	std::array<Plane, zResolution + 1> z_planes;
+	std::vector<Plane> x_planes;
+	std::vector<Plane> y_planes;
+	std::vector<Plane> z_planes;
 
-	int m_lightCounts[xResolution][yResolution][zResolution];
-    std::array<glm::int16, 32> m_cluster[xResolution][yResolution][zResolution];
-    glm::uvec2 m_lookUp[xResolution * yResolution * zResolution];
+	std::vector<unsigned> m_lightCounts;
+    std::vector<std::array<glm::int16, 128>> m_cluster;
+	std::vector<glm::uvec2> m_lookUp;
 	std::vector<glm::uint16> m_indices;
+
+	static const size_t m_lookupTextureWidth = 4096;
 };

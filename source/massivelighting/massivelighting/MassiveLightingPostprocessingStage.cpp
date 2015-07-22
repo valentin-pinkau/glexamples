@@ -25,6 +25,7 @@ MassiveLightingPostprocessingStage::MassiveLightingPostprocessingStage()
     addInput("depthTexture", depthTexture);
 	addInput("clusterTexture", clusterTexture);
 	addInput("lightIndicesTexture", lightIndicesTexture);
+	addInput("enableDebugOutput", enableDebugOutput);
     addOptionalInput("targetFBO", targetFBO);
 	
 	alwaysProcess(true);
@@ -41,6 +42,7 @@ void MassiveLightingPostprocessingStage::initialize()
 
 	m_uniforms.addUniform(new globjects::Uniform<glm::mat4>("transformInverted", glm::mat4()));
 	m_uniforms.addUniform(new globjects::Uniform<glm::vec3>("eye", glm::vec3()));
+	m_uniforms.addUniform(new globjects::Uniform<glm::int32>("enableDebugOutput", 0));
 	m_uniforms.addUniform(new globjects::Uniform<int>("colorTexture", 0));
 	m_uniforms.addUniform(new globjects::Uniform<int>("normalTexture", 1));
 	m_uniforms.addUniform(new globjects::Uniform<int>("depthTexture", 2));
@@ -53,6 +55,11 @@ void MassiveLightingPostprocessingStage::initialize()
 
 void MassiveLightingPostprocessingStage::process()
 {
+	if (enableDebugOutput.hasChanged())
+	{
+		m_uniforms.uniform<glm::int32>("enableDebugOutput")->set(enableDebugOutput.data());
+	}
+
 	if (camera.hasChanged() || projection.hasChanged())
 	{
 		const auto transformInverted = camera.data()->viewInverted() * projection.data()->projectionInverted();

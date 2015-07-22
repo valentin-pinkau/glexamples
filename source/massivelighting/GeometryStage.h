@@ -35,6 +35,8 @@ public:
 
     gloperate::InputSlot<reflectionzeug::FilePath> sceneFilePath;
 	gloperate::InputSlot<gloperate::ResourceManager *> resourceManager;
+	gloperate::InputSlot<bool> useLightInput;
+	gloperate::InputSlot<GPULights> lightsInput;
     gloperate::Data<std::vector<std::unique_ptr<gloperate::PolygonalDrawable>>> drawables;
 	gloperate::Data<std::vector<globjects::ref_ptr<globjects::Texture>>> materials;
     gloperate::Data<globjects::ref_ptr<globjects::Buffer>> lightsBuffer;
@@ -43,7 +45,7 @@ public:
 protected:
     virtual void process() override;
 	void reloadScene();
-
+	GPULights m_sceneLights;
 };
 
 

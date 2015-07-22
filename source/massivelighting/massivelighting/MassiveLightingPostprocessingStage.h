@@ -47,6 +47,7 @@ public:
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> clusterTexture;
 	gloperate::InputSlot<globjects::ref_ptr<globjects::Texture>> lightIndicesTexture;
     gloperate::InputSlot<gloperate::AbstractTargetFramebufferCapability *> targetFBO;
+	gloperate::InputSlot<bool> enableDebugOutput;
 
 protected:
     globjects::ref_ptr<globjects::Framebuffer> m_fbo;
