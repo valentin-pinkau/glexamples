@@ -18,15 +18,15 @@ using gloperate::make_unique;
 
 MassiveLightingPipeline::MassiveLightingPipeline()
 	: AbstractPipeline("MassiveLightingPipeline")
-	, sceneFilePath("data/massivelighting/models/crytek-sponza/sponza.fbx")
+    , sceneFilePath("data/massivelighting/models/testScene/testScene.fbx")
 	, enableDebugView(false)
-	, enableDemoLights(true)
+    , enableDemoLights(false)
 	, demoLightsCount(64)
 	, animateLights(true)
 	, clustersX(30)
 	, clustersY(17)
 	, clustersZ(16)
-	, attenuationThreshold(0.1f)
+    , attenuationThreshold(0.01f)
 {
 	auto demoLightStage = new MassiveLightingDemoLightStage();
     auto geometryStage = new GeometryStage();
