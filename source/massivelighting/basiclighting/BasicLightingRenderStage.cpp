@@ -11,6 +11,7 @@
 #include <globjects/Texture.h>
 #include <globjects/Framebuffer.h>
 #include <globjects/globjects.h>
+#include <globjects/NamedString.h>
 
 #include <gloperate/primitives/UniformGroup.h>
 
@@ -48,7 +49,7 @@ void BasicLightingRenderStage::initialize()
 {
     setupGLState();
     loadShader();
-	setupFbo();
+    //setupFbo();
     setupUniforms();
 
     static const auto zNear = 0.3f, zFar = 30.f;
@@ -77,38 +78,40 @@ void BasicLightingRenderStage::loadShader()
     debug() << "Using global OS X shader replacement '#version 140' -> '#version 150'" << std::endl;
 #endif
 
+
     m_program = new Program{};
     m_program->attach(
-		Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/shaders/basiclighting/render.vert", { "data/massivelighting/shaders/common" }),
-		Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/shaders/basiclighting/render.frag", { "data/massivelighting/shaders/common" })
+        Shader::fromFile(GL_VERTEX_SHADER, "data/massivelighting/shaders/basiclighting/render.vert"),
+        Shader::fromFile(GL_FRAGMENT_SHADER, "data/massivelighting/shaders/basiclighting/render.frag")
     );
+
 }
 
-void BasicLightingRenderStage::resizeFbo(int width, int height)
-{
-	m_colorTexture->image2D(0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	m_depthTexture->image2D(0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr);
+//void BasicLightingRenderStage::resizeFbo(int width, int height)
+//{
+//	m_colorTexture->image2D(0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+//	m_depthTexture->image2D(0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr);
 
-	m_fbo->printStatus(true);
-}
+//	m_fbo->printStatus(true);
+//}
 
-void BasicLightingRenderStage::setupFbo()
-{
-	static const auto createTexture = [](const std::string & name)
-	{
-		auto tex = Texture::createDefault(GL_TEXTURE_2D);
-		tex->setName(name);
-		return tex;
-	};
+//void BasicLightingRenderStage::setupFbo()
+//{
+//	static const auto createTexture = [](const std::string & name)
+//	{
+//		auto tex = Texture::createDefault(GL_TEXTURE_2D);
+//		tex->setName(name);
+//		return tex;
+//	};
 
-	m_colorTexture = createTexture("Color Texture");
-	m_depthTexture = createTexture("Depth Texture");
-	m_fbo = make_ref<globjects::Framebuffer>();
-	m_fbo->setName("Render FBO");
+//	m_colorTexture = createTexture("Color Texture");
+//	m_depthTexture = createTexture("Depth Texture");
+//	m_fbo = make_ref<globjects::Framebuffer>();
+//	m_fbo->setName("Render FBO");
 
-	m_fbo->attachTexture(GL_COLOR_ATTACHMENT0, m_colorTexture);
-	m_fbo->attachTexture(GL_DEPTH_STENCIL_ATTACHMENT, m_depthTexture);
-}
+//	m_fbo->attachTexture(GL_COLOR_ATTACHMENT0, m_colorTexture);
+//	m_fbo->attachTexture(GL_DEPTH_STENCIL_ATTACHMENT, m_depthTexture);
+//}
 
 void BasicLightingRenderStage::setupUniforms()
 {
@@ -120,26 +123,7 @@ void BasicLightingRenderStage::setupUniforms()
 
 void BasicLightingRenderStage::process()
 {
-    auto rerender = false;
 
-    if (drawables.hasChanged())
-    {
-        rerender = true;
-    }
-
-    if (lightsBuffer.hasChanged() && lightsBuffer.data())
-    {
-        auto uniformBlock = m_program->uniformBlock("Lights");
-        lightsBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 0);
-        uniformBlock->setBinding(0);
-        rerender = true;
-    }
-
-    if (viewport.hasChanged())
-    {
-		resizeFbo(viewport.data()->width(), viewport.data()->height());
-        rerender = true;
-    }
 
     if (camera.hasChanged() || projection.hasChanged())
     {
@@ -149,27 +133,12 @@ void BasicLightingRenderStage::process()
 		m_uniforms.uniform<glm::vec3>("eye")->set(eye);
 
         m_grid->update(eye, transform);
-        rerender = true;
     }
 
-    if (rerender)
-    {
-        render();
 
-        invalidateOutputs();
-    }
+    render();
 
-	m_fbo->bind();
-	
-	std::array<int, 4> sourceRect = { { 0, 0, viewport.data()->width(), viewport.data()->height() } };
-	std::array<int, 4> destRect = { { 0, 0, viewport.data()->width(), viewport.data()->height() } };
-
-	auto destFbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
-
-	m_fbo->blit(gl::GL_COLOR_ATTACHMENT0, sourceRect, destFbo, gl::GL_BACK_LEFT, destRect, gl::GL_COLOR_BUFFER_BIT, gl::GL_NEAREST);
-	m_fbo->blit(gl::GL_DEPTH_ATTACHMENT, sourceRect, destFbo, gl::GL_BACK_LEFT, destRect, gl::GL_DEPTH_BUFFER_BIT, gl::GL_NEAREST);
-
-	m_fbo->unbind();
+    invalidateOutputs();
 }
 
 void BasicLightingRenderStage::render()
@@ -179,8 +148,20 @@ void BasicLightingRenderStage::render()
         viewport.data()->y(),
         viewport.data()->width(),
         viewport.data()->height());
-	
+
+    if (!m_fbo)
+    {
+        m_fbo = targetFBO.isConnected() && targetFBO.data()->framebuffer() ? targetFBO.data()->framebuffer() : globjects::Framebuffer::defaultFBO();
+    }
+
 	m_fbo->bind();
+
+    if (lightsBuffer.hasChanged() && lightsBuffer.data())
+    {
+        auto uniformBlock = m_program->uniformBlock("Lights");
+        lightsBuffer.data()->bindBase(GL_UNIFORM_BUFFER, 0);
+        uniformBlock->setBinding(0);
+    }
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

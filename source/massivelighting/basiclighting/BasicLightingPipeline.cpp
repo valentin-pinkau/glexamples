@@ -9,7 +9,7 @@
 #include <gloperate/painter/AbstractTargetFramebufferCapability.h>
 #include <gloperate/resources/ResourceManager.h>
 #include <globjects/base/File.h>
-#include <globjects/NamedString.h>
+
 
 using gloperate::make_unique;
 
@@ -23,6 +23,7 @@ BasicLightingPipeline::BasicLightingPipeline()
 
     geometryStage->sceneFilePath = sceneFilePath;
 	geometryStage->resourceManager = resourceManager;
+    geometryStage->useLightInput = gloperate::Data<bool>(false);
 
     renderStage->drawables = geometryStage->drawables;
 	renderStage->materials = geometryStage->materials;
@@ -37,7 +38,6 @@ BasicLightingPipeline::BasicLightingPipeline()
         renderStage
     );
 
-	// Initialize shader includes
-	globjects::NamedString::create("data/massivelighting/shaders/common/phong.glsl", new globjects::File("data/massivelighting/shaders/common/phong.glsl"));
+
 }
 

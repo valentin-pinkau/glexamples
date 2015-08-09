@@ -25,6 +25,10 @@ struct GPULight
 struct GPULights
 {
     glm::vec4 ambient_color;
-    GPULight lights[MAX_LIGHTS];
     glm::uint number_of_lights;
+    glm::uint padding1;
+    glm::uint padding2;
+    glm::uint padding3;
+    GPULight lights[MAX_LIGHTS];
+
 };

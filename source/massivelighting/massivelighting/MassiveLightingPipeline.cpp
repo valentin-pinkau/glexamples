@@ -77,7 +77,5 @@ MassiveLightingPipeline::MassiveLightingPipeline()
         postprocessingStage
     );
 
-	// Initialize shader includes
-	globjects::NamedString::create("data/massivelighting/shaders/common/phong.glsl", new globjects::File("data/massivelighting/shaders/common/phong.glsl"));
 }
 

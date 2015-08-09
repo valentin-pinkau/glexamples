@@ -56,9 +56,9 @@ protected:
     virtual void process() override;
     void setupGLState();
     void loadShader();
-	void setupFbo();
+    //void setupFbo();
     void setupUniforms();
-	void resizeFbo(int width, int height);
+    //void resizeFbo(int width, int height);
     void render();
 
 protected:

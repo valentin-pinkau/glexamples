@@ -1,7 +1,7 @@
 #include "MassiveLightingDemoLightStage.h"
 
 #include <random>
-
+#include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.inl>
 
@@ -12,7 +12,6 @@
 #include <globjects/Logging.h>
 
 #include <gloperate/primitives/Light.h>
-
 using namespace gl;
 
 MassiveLightingDemoLightStage::MassiveLightingDemoLightStage()
@@ -22,6 +21,10 @@ MassiveLightingDemoLightStage::MassiveLightingDemoLightStage()
 	addInput("activeLights", activeLights);
 	addInput("animateLights", animateLights);
 }
+float getRandomFloat(float lowerBound, float upperBound)
+{
+    return lowerBound + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(upperBound-lowerBound)));
+}
 
 void MassiveLightingDemoLightStage::initialize()
 {
@@ -29,32 +32,21 @@ void MassiveLightingDemoLightStage::initialize()
 
 	GPULights lights;
 	lights.ambient_color = glm::vec4(1, 1, 1, 1);
-
-	std::mt19937 rng(1337);
-
-	std::tr1::uniform_real<float> radiusNormDist(0.0f, 1.0f);
-	const float maxRadius = 20.0f;
-	std::uniform_real<float> angleDist(0.0f, 2.0f * glm::pi<float>());
-	std::uniform_real<float> heightDist(0.0f, 5.0f);
-	std::uniform_real<float> animationSpeedDist(2.0f, 20.0f);
-	std::uniform_int<int> animationDirection(0, 1);
-	std::uniform_real<float> hueDist(0.0f, 1.0f);
-	std::uniform_real<float> intensityDist(0.1f, 0.5f);
+    const float maxRadius = 20.0f;
 
 	for (auto i = 0; i < MAX_LIGHTS; ++i)
 	{
 		auto & light = lights.lights[i];
 		auto & initialTransform = m_lightInitialTransform[i];
 
-		initialTransform.radius = std::sqrt(radiusNormDist(rng)) * maxRadius;
-		initialTransform.angle = angleDist(rng);
-		initialTransform.height = heightDist(rng);
+        initialTransform.radius = std::sqrt(getRandomFloat(0.0f, 1.0f)) * maxRadius;
+        initialTransform.angle = getRandomFloat(0.0f, 2.0f * glm::pi<float>());
+        initialTransform.height = getRandomFloat(0.0f, 5.0f);
 		// Normalize by arc length
-		initialTransform.animationSpeed = (animationDirection(rng) * 2 - 1) * animationSpeedDist(rng) / initialTransform.radius;
-
+        initialTransform.animationSpeed = getRandomFloat(2.0f, 20.0f) / initialTransform.radius;
 		light.position.w = static_cast<int>(gloperate::LightSourceType::Point);
-		light.attenuation = glm::vec4(0, 2, 0, 0);
-		light.color = glm::vec4(intensityDist(rng) * hueToRgb(hueDist(rng)), 1.f);
+        light.attenuation = glm::vec4(0, 3, 0, 0);
+        light.color = glm::vec4(getRandomFloat(0.1f, 0.5f) * hueToRgb(getRandomFloat(0.1f, 0.5f)), 1.f);
 	}
 
 	gpuLights.setData(lights);
@@ -87,7 +79,7 @@ void MassiveLightingDemoLightStage::process()
 
 glm::vec3 MassiveLightingDemoLightStage::hueToRgb(float hue)
 {
-	float intPart;
+    double intPart;
 	float fracPart = modf(hue * 6.0f, &intPart);
 	int region = static_cast<int>(intPart);
 
